@@ -31,6 +31,6 @@ public class Pion {
 
     @Override
     public String toString() {
-        return "pion " + couleur;
+        return "pion " + couleur + " associé au noeud (" + noeudActuel.getX() + "," + noeudActuel.getY() + ")";
     }
 }
