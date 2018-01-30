@@ -14,6 +14,14 @@ public class Pion {
     }
 
     /**
+     * GETTERS ET SETTERS
+     */
+
+    public void setNoeudActuel(Noeud noeudActuel) {
+        this.noeudActuel = noeudActuel;
+    }
+
+    /**
      * Déplace, si possible le pion dans la direction indiquée
      * @param direction
      */
@@ -21,5 +29,8 @@ public class Pion {
 
     }
 
-
+    @Override
+    public String toString() {
+        return "pion " + couleur;
+    }
 }

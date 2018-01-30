@@ -38,11 +38,11 @@ public class Noeud extends Circle {
         this.x = x;
         this.y = y;
         this.setRadius(RAYON_NOEUD);
+        this.containsPion = false;
+        this.pion = null;
 
         if(controller == null)
             controller = Main.getController();
-
-        System.out.println(x + "  " + y);
 
     }
 
@@ -63,11 +63,14 @@ public class Noeud extends Circle {
      * @param pion
      */
     public void setPion (Pion pion) {
-        if(!containsPion) {
+        if(!containsPion && pion != null) {
             this.containsPion = true;
             this.pion = pion;
         }
     }
 
-
+    @Override
+    public String toString() {
+        return "Noeud { " + "containsPion = " + containsPion + ", pion = " + pion + ", x = " + x + ", y = " + y + " }";
+    }
 }
