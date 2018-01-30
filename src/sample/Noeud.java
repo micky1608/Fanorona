@@ -21,10 +21,12 @@ public class Noeud extends Circle {
     private int x;
     private int y;
 
-    static final double RAYON_NOEUD = 10;
+    private static final double RAYON_NOEUD = 10;
+    private static Controller controller = null;
 
 
     /**
+     * CONSTRUCTEUR
      * Crée un noeuds à la position demandée
      * @param x
      * @param y
@@ -32,9 +34,28 @@ public class Noeud extends Circle {
     public Noeud(int x , int y) throws IllegalArgumentException {
         if(x < 0 || x > 8 || y < 0 || y > 4)
             throw new IllegalArgumentException();
+
         this.x = x;
         this.y = y;
         this.setRadius(RAYON_NOEUD);
+
+        if(controller == null)
+            controller = Main.getController();
+
+        System.out.println(x + "  " + y);
+
+    }
+
+    /**
+     * GETTERS ANS SETTERS
+     */
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     /**

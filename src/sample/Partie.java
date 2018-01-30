@@ -1,6 +1,6 @@
 package sample;
 
-public class Partie implements Runnable {
+public class Partie extends Thread {
 
     private Plateau plateau;
 

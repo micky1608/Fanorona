@@ -24,6 +24,15 @@ public class Controller implements Initializable {
             gridPane.getColumnConstraints().add(columnConstraint);
         for(int i=0 ; i<5 ; i++)
             gridPane.getRowConstraints().add(rowConstraints);
+    }
 
+    /**
+     * Permet d'inserer un noeud dans une case du gridPane si aucun noeud ne s'y trouve déjà
+     * @param x
+     * @param y
+     */
+    public void addNoeud (Noeud noeud , int x , int y) {
+        GridPane.setConstraints(noeud , x , y);
+        gridPane.getChildren().add(noeud);
     }
 }
