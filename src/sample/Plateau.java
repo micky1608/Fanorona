@@ -50,16 +50,32 @@ public class Plateau {
      * indique si un noeud qui contient un pion est selectionne pour faire un mouvement
      * @return
      */
-    public boolean existNoeudSelected() {
-        //TODO
-        return false;
+    public boolean existNoeudSelected()  {
+        boolean result = false;
+        for(int i=0 ; i<9 ; i++) {
+            for(int j=0 ; j<5 ; j++) {
+                if(noeuds[i][j].isNoeudSelected()) {
+                    if(result)
+                        System.out.println("Double selection");
+                    result = true;
+                }
+            }
+        }
+        return result;
     }
 
     /**
      * @return le noeud qui contient un pion actuellement selectionne s'il y en a un (un seul)
      */
     public Noeud getNoeudSelected() {
-        //TODO
+        if(existNoeudSelected()) {
+            for(int i=0 ; i<9 ; i++) {
+                for (int j = 0; j < 5; j++) {
+                    if(noeuds[i][j].isNoeudSelected())
+                        return noeuds[i][j];
+                }
+            }
+        }
         return null;
     }
 

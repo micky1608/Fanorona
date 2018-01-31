@@ -1,8 +1,11 @@
 package sample;
 
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+
 
 public class Noeud extends Circle {
 
@@ -24,6 +27,7 @@ public class Noeud extends Circle {
 
     private static final double RAYON_NOEUD_VIDE = 20;
     private static final double RAYON_NOEUD_PION = 25;
+    private static final double RAYON_NOEUD_PION_SELECTED = 30;
     private static final Color COULEUR_UTILISATEUR = Color.WHITE;
     private static final Color COULEUR_ORDINATEUR = Color.BLACK;
     private static final Color COULEUR_VIDE = Color.GREY;
@@ -45,8 +49,17 @@ public class Noeud extends Circle {
         this.plateau = plateau;
         this.isNoeudSelected = false;
 
-        this.setOnMouseClicked((event) -> this.select(true));
-    }
+        this.setOnMouseClicked((event) -> {
+                if(!this.isNoeudSelected())
+                    this.select(true);
+                else
+                    this.deselect();
+        });
+
+        ThreadNoeud threadNoeud = new ThreadNoeud();
+        threadNoeud.setDaemon(true);
+        threadNoeud.start();
+        }
 
     /**
      * GETTERS ANS SETTERS
@@ -58,6 +71,10 @@ public class Noeud extends Circle {
 
     public int getY() {
         return posY;
+    }
+
+    public boolean isNoeudSelected () {
+        return this.isNoeudSelected;
     }
 
     /**
@@ -127,21 +144,28 @@ public class Noeud extends Circle {
                 Noeud noeudDepartMouvement = plateau.getNoeudSelected();
                 if(this.isVoisinOf(noeudDepartMouvement)) {
 
-                    // on indique que le noeud de départ devient vide
-                    noeudDepartMouvement.setContainsPion(false , 2);
-
-                    // on remplit le noeud destination
+                    // on recupere la couleur du noeud de départ
                     int codeCouleur = 2;
                     if(noeudDepartMouvement.getFill().equals(Color.WHITE)) codeCouleur = 0;
                     if(noeudDepartMouvement.getFill().equals(Color.BLACK)) codeCouleur = 1;
+
+                    // on indique que le noeud de départ devient vide
+                    noeudDepartMouvement.setContainsPion(false , 2);
+
+                    // on deselectionne le noeud de depart
+                    noeudDepartMouvement.deselect();
+
+                    // on remplit le noeud destination
                     this.setContainsPion(true , codeCouleur);
                 }
             }
         }
+        System.out.println("J ai cliqué sur  " + this);
     }
 
     public void deselect() {
         this.isNoeudSelected = false;
+        System.out.println("J ai cliqué sur  " + this);
     }
 
     /**
@@ -151,12 +175,38 @@ public class Noeud extends Circle {
      */
     private boolean isVoisinOf(Noeud noeudDepartMouvement) {
         //TODO
-        return false;
+        return true;
     }
 
 
     @Override
     public String toString() {
         return "Noeud { " + "containsPion = " + containsPion + ", posX = " + posX + ", posY = " + posY + ", couleur = " + this.getFill().toString() + ", isNoeudSelected = " + isNoeudSelected + " }";
+    }
+
+
+    /**
+     * Thread qui va ajuster la taille du noeud pour le faire grandir en cas de selection
+     */
+    private class ThreadNoeud extends Thread {
+
+        @Override
+        public void run() {
+            while(Noeud.this != null) {
+                if(containsPion) {
+                    if(isNoeudSelected)
+                        Noeud.this.setRadius(Noeud.this.RAYON_NOEUD_PION_SELECTED);
+                    else
+                        Noeud.this.setRadius(Noeud.this.RAYON_NOEUD_PION);
+                    try {
+                        sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+
     }
 }
