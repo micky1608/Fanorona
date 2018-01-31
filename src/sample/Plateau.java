@@ -12,6 +12,11 @@ public class Plateau {
         this.noeuds = new Noeud[9][5];
         controller = Main.getController();
         creerNoeuds();
+
+        ThreadNoeud threadNoeud = new ThreadNoeud();
+        threadNoeud.setDaemon(true);
+        threadNoeud.start();
+
         afficheNoeuds();
     }
 
@@ -41,6 +46,7 @@ public class Plateau {
                         noeuds[i][j].setContainsPion(true , 0);
                         break;
                 }
+                controller.addNoeud(noeuds[i][j] , i , j);
             }
         }
     }
@@ -83,9 +89,34 @@ public class Plateau {
         for(int i=0 ; i<9 ; i++) {
             for (int j = 0; j < 5; j++) {
                 // Affichage dans la console
-                System.out.println(noeuds[i][j]);
-                controller.addNoeud(noeuds[i][j] , i , j);
+                //System.out.println(noeuds[i][j]);
+
             }
+        }
+    }
+
+    /**
+     * Thread qui va ajuster la taille du noeud pour le faire grandir en cas de selection
+     */
+    private class ThreadNoeud extends Thread {
+
+        @Override
+        public void run() {
+            while(true) {
+                for(int i=0 ; i<9 ; i++) {
+                    for(int j=0 ; j<5 ; j++) {
+                        if(noeuds[i][j].isContainsPion()) {
+
+                            if(noeuds[i][j].isNoeudSelected() && noeuds[i][j].getRadius() != Noeud.getRayonNoeudPionSelected())
+                                noeuds[i][j].setRadius(Noeud.getRayonNoeudPionSelected());
+
+                            else if(!noeuds[i][j].isNoeudSelected() && noeuds[i][j].getRadius() != Noeud.getRayonNoeudPion())
+                                noeuds[i][j].setRadius(Noeud.getRayonNoeudPion());
+                        }
+                    }
+                }
+            }
+
         }
     }
 

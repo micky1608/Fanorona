@@ -56,9 +56,6 @@ public class Noeud extends Circle {
                     this.deselect();
         });
 
-        ThreadNoeud threadNoeud = new ThreadNoeud();
-        threadNoeud.setDaemon(true);
-        threadNoeud.start();
         }
 
     /**
@@ -75,6 +72,18 @@ public class Noeud extends Circle {
 
     public boolean isNoeudSelected () {
         return this.isNoeudSelected;
+    }
+
+    public boolean isContainsPion () {
+        return this.containsPion;
+    }
+
+    public static double getRayonNoeudPion() {
+        return RAYON_NOEUD_PION;
+    }
+
+    public static double getRayonNoeudPionSelected() {
+        return RAYON_NOEUD_PION_SELECTED;
     }
 
     /**
@@ -139,9 +148,11 @@ public class Noeud extends Circle {
             }
         }
         else {
+
             // On selectionne une case vide donc un pion doit etre selectionne
             if(plateau.existNoeudSelected()) {
                 Noeud noeudDepartMouvement = plateau.getNoeudSelected();
+
                 if(this.isVoisinOf(noeudDepartMouvement)) {
 
                     // on recupere la couleur du noeud de départ
@@ -160,12 +171,10 @@ public class Noeud extends Circle {
                 }
             }
         }
-        System.out.println("J ai cliqué sur  " + this);
     }
 
     public void deselect() {
         this.isNoeudSelected = false;
-        System.out.println("J ai cliqué sur  " + this);
     }
 
     /**
@@ -189,29 +198,4 @@ public class Noeud extends Circle {
         return "Noeud { " + "containsPion = " + containsPion + ", posX = " + posX + ", posY = " + posY + ", couleur = " + this.getFill().toString() + ", isNoeudSelected = " + isNoeudSelected + " }";
     }
 
-
-    /**
-     * Thread qui va ajuster la taille du noeud pour le faire grandir en cas de selection
-     */
-    private class ThreadNoeud extends Thread {
-
-        @Override
-        public void run() {
-            while(Noeud.this != null) {
-                if(containsPion) {
-                    if(isNoeudSelected)
-                        Noeud.this.setRadius(Noeud.this.RAYON_NOEUD_PION_SELECTED);
-                    else
-                        Noeud.this.setRadius(Noeud.this.RAYON_NOEUD_PION);
-                    try {
-                        sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-
-    }
 }
