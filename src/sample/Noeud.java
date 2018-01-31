@@ -170,12 +170,17 @@ public class Noeud extends Circle {
 
     /**
      * Indique si le noeud passé en parametre est un voisin
-     * @param noeudDepartMouvement
+     * @param otherNoeud
      * @return
      */
-    private boolean isVoisinOf(Noeud noeudDepartMouvement) {
-        //TODO
-        return true;
+    private boolean isVoisinOf(Noeud otherNoeud) {
+        int posX_other = otherNoeud.getX();
+        int posY_other = otherNoeud.getY();
+
+        if(posX_other == posX || posX_other == posX - 1 || posX_other == posX + 1 )
+            return (posY_other == posY || posY_other == posY - 1 || posY_other == posY + 1 ) ? true : false;
+
+        return false;
     }
 
 
