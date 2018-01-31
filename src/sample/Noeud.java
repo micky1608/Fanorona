@@ -1,11 +1,13 @@
 package sample;
 
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
 public class Noeud extends Circle {
 
     private boolean containsPion;
+    private boolean isNoeudSelected;
 
     // La position du noeud sur la grille du plateau
     // L'origine du repère est en haut à gauche
@@ -40,12 +42,9 @@ public class Noeud extends Circle {
 
         this.posX = x;
         this.posY = y;
-        this.setRadius(RAYON_NOEUD_VIDE);
-        this.containsPion = false;
-
+        this.isNoeudSelected = false;
         if(controller == null)
             controller = Main.getController();
-
     }
 
     /**
@@ -96,11 +95,28 @@ public class Noeud extends Circle {
 
         this.setRadius(rayon);
         this.setFill(couleur);
+    }
 
+    /**
+     * Permet de selectionner un noeud
+     * @param selectByUser indique si cette action est effectuée par l'utilisateur ou l'ordinateur
+     *                     true : utilisateur -> ne peut selectionner que des pions blancs
+     *                     false : ordinateur -> ne peut selectionner que des pions noirs
+     */
+    public void select (boolean selectByUser) {
+        Paint couleurNoeud = this.getFill();
+        if(selectByUser) {
+            if(couleurNoeud.equals(Color.WHITE))
+                this.isNoeudSelected = true;
+        }
+        else {
+            if(couleurNoeud.equals(Color.BLACK))
+                this.isNoeudSelected = true;
+        }
     }
 
     @Override
     public String toString() {
-        return "Noeud { " + "containsPion = " + containsPion + ", posX = " + posX + ", posY = " + posY + ", couleur = " + this.getFill().toString() + '}';
+        return "Noeud { " + "containsPion = " + containsPion + ", posX = " + posX + ", posY = " + posY + ", couleur = " + this.getFill().toString() + ", isNoeudSelected = " + isNoeudSelected + " }";
     }
 }
