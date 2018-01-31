@@ -1,13 +1,11 @@
 package sample;
 
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class Noeud extends Circle {
 
     private boolean containsPion;
-
-    // Le pion qui se trouve sur ce noeud ( null possible )
-    private Pion pion;
 
     // La position du noeud sur la grille du plateau
     // L'origine du repère est en haut à gauche
@@ -18,10 +16,15 @@ public class Noeud extends Circle {
         (0,3) (1,3) (2,3) (3,3) (4,3) (5,3) (6,3) (7,3) (8,3)
         (0,4) (1,4) (2,4) (3,4) (4,4) (5,4) (6,4) (7,4) (8,4)
      */
-    private int x;
-    private int y;
+    private int posX;
+    private int posY;
 
-    private static final double RAYON_NOEUD = 10;
+    private static final double RAYON_NOEUD_VIDE = 10;
+    private static final double RAYON_NOEUD_PION = 15;
+    private static final Color COULEUR_UTILISATEUR = Color.WHITE;
+    private static final Color COULEUR_ORDINATEUR = Color.BLACK;
+    private static final Color COULEUR_VIDE = Color.GREY;
+
     private static Controller controller = null;
 
 
@@ -35,11 +38,10 @@ public class Noeud extends Circle {
         if(x < 0 || x > 8 || y < 0 || y > 4)
             throw new IllegalArgumentException();
 
-        this.x = x;
-        this.y = y;
-        this.setRadius(RAYON_NOEUD);
+        this.posX = x;
+        this.posY = y;
+        this.setRadius(RAYON_NOEUD_VIDE);
         this.containsPion = false;
-        this.pion = null;
 
         if(controller == null)
             controller = Main.getController();
@@ -51,26 +53,45 @@ public class Noeud extends Circle {
      */
 
     public int getX() {
-        return x;
+        return posX;
     }
 
     public int getY() {
-        return y;
+        return posY;
     }
 
     /**
-     * Affecte un pion sur ce noeud si ce noeud est vide
-     * @param pion
+     * Met a jour le booleen qui indique si le noeud contient un pion et met a jour le rayon du cercle ainsi que sa couleur
+     * @param containsPion
+     * @param codeCouleur permet de definir la nouvelle couleur du noeud
+     *                    0 : Couleur des pions utilisateur
+     *                    1 : Couleur des pions ordinateur
+     *                    2 : Couleur noeud vide
      */
-    public void setPion (Pion pion) {
-        if(!containsPion && pion != null) {
-            this.containsPion = true;
-            this.pion = pion;
-        }
+    public void setContainsPion (boolean containsPion , int codeCouleur) {
+        if(codeCouleur < 0 ||  codeCouleur > 2)
+            throw new IllegalArgumentException();
+
+        this.containsPion = containsPion;
+
+        Color couleur = null;
+        double rayon = 0;
+        if (codeCouleur == 0) couleur = COULEUR_UTILISATEUR;
+        if (codeCouleur == 1) couleur = COULEUR_ORDINATEUR;
+        if (codeCouleur == 2) couleur = COULEUR_VIDE;
+
+        if(this.containsPion == true)
+            rayon = RAYON_NOEUD_PION;
+        else
+            rayon = RAYON_NOEUD_VIDE;
+
+        this.setRadius(rayon);
+        this.setFill(couleur);
+
     }
 
     @Override
     public String toString() {
-        return "Noeud { " + "containsPion = " + containsPion + ", pion = " + pion + ", x = " + x + ", y = " + y + " }";
+        return "Noeud { " + "containsPion = " + containsPion + ", posX = " + posX + ", posY = " + posY + ", couleur = " + this.getFill().toString() + '}';
     }
 }

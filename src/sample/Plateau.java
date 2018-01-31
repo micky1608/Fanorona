@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,18 +10,10 @@ public class Plateau {
     // La matrice qui contient tous les noeuds du plateau
     private Noeud[][] noeuds;
 
-    // La liste de qui contient tous les pions en jeu
-    private List<Pion> pions;
-
-
 
     public Plateau () {
         this.noeuds = new Noeud[9][5];
-        this.pions = new ArrayList<Pion>();
-
         creerNoeuds();
-        creerPions();
-
         afficheNoeuds();
     }
 
@@ -30,37 +24,46 @@ public class Plateau {
         for(int i=0 ; i<9 ; i++) {
             for(int j=0 ; j<5 ; j++) {
                 noeuds[i][j] = new Noeud(i,j);
-            }
-        }
-    }
-
-    /**
-     * Instancie tous les pions de la partie et les place sur les bons noeuds au départ de la partie
-     */
-    private void creerPions() {
-        for(int i=0 ; i<9 ; i++) {
-            for(int j=0 ; j<5 ; j++) {
-                Pion pion = null;
                 switch(j) {
                     case 0 : case 1 :
-                        pion = new Pion(noeuds[i][j] , Couleur.NOIR);
+                        noeuds[i][j].setContainsPion(true , 1);
                         break;
                     case 2 :
                         if(i != 4) {
                             if(i%2 == 0)
-                                pion = new Pion(noeuds[i][j] , Couleur.BLANC);
+                                noeuds[i][j].setContainsPion(true , 0);
                             else
-                                pion = new Pion(noeuds[i][j] , Couleur.NOIR);
+                                noeuds[i][j].setContainsPion(true , 1);
+                        }
+                        else {
+                            noeuds[i][j].setContainsPion(false , 2);
                         }
                         break;
                     case 3 : case 4 :
-                        pion = new Pion(noeuds[i][j] , Couleur.BLANC);
+                        noeuds[i][j].setContainsPion(true , 0);
                         break;
                 }
-                noeuds[i][j].setPion(pion);
-                pions.add(pion);
             }
         }
+    }
+
+
+    /**
+     * indique si au moins un pion est selectionne pour faire un mouvement
+     * @return
+     */
+    public boolean existPionSelected() {
+        //TODO
+        return false;
+    }
+
+    /**
+     * @return le pion actuellement selectionne s'il y en a un (un seul)
+     * @return null si aucun pion n'est selectionne ou plusieurs sont selectionnés
+     */
+    public Noeud getNoeudSelected() {
+        //TODO
+        return null;
     }
 
     private void afficheNoeuds() {

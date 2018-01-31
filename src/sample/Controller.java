@@ -2,6 +2,7 @@ package sample;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -14,7 +15,15 @@ public class Controller implements Initializable {
     @FXML
     private GridPane gridPane;
 
+    @FXML
+    private TextArea console;
 
+
+    /**
+     * On initialise la taille des lignes et colonnes du GridPane
+     * @param location
+     * @param resources
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         gridPane.setGridLinesVisible(true);

@@ -3,7 +3,8 @@ package sample;
 public enum Couleur {
 
     BLANC("BLANC") ,
-    NOIR("NOIR");
+    NOIR("NOIR"),
+    VIDE("VIDE");
 
     private String stringCouleur;
 
@@ -15,4 +16,6 @@ public enum Couleur {
     public String toString() {
         return stringCouleur;
     }
+
+
 }
