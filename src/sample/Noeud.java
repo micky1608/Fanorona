@@ -74,13 +74,22 @@ public class Noeud extends Circle {
 
         this.containsPion = containsPion;
 
-        Color couleur = null;
+        Color couleur;
         double rayon = 0;
-        if (codeCouleur == 0) couleur = COULEUR_UTILISATEUR;
-        if (codeCouleur == 1) couleur = COULEUR_ORDINATEUR;
-        if (codeCouleur == 2) couleur = COULEUR_VIDE;
 
-        if(this.containsPion == true)
+        switch(codeCouleur) {
+            case 0 :
+                couleur = COULEUR_UTILISATEUR;
+                break;
+            case 1 :
+                couleur = COULEUR_ORDINATEUR;
+                break;
+            default :
+                couleur = COULEUR_VIDE;
+                break;
+        }
+
+        if(this.containsPion)
             rayon = RAYON_NOEUD_PION;
         else
             rayon = RAYON_NOEUD_VIDE;
