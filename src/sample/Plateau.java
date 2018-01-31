@@ -1,10 +1,5 @@
 package sample;
 
-import javafx.scene.paint.Color;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class Plateau {
 
     // La matrice qui contient tous les noeuds du plateau
@@ -49,17 +44,17 @@ public class Plateau {
 
 
     /**
-     * indique si au moins un pion est selectionne pour faire un mouvement
+     * indique si au moins un noeud est selectionne pour faire un mouvement
      * @return
      */
-    public boolean existPionSelected() {
+    public boolean existNoeudSelected() {
         //TODO
         return false;
     }
 
     /**
-     * @return le pion actuellement selectionne s'il y en a un (un seul)
-     * @return null si aucun pion n'est selectionne ou plusieurs sont selectionnés
+     * @return le noeud actuellement selectionne s'il y en a un (un seul)
+     * @return null si aucun noeud n'est selectionne ou plusieurs sont selectionnés
      */
     public Noeud getNoeudSelected() {
         //TODO
