@@ -30,7 +30,6 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        gridPane.setGridLinesVisible(true);
 
         // On redefinit la taille des lignes et colonnes
         ColumnConstraints columnConstraint = new ColumnConstraints(100);
@@ -40,7 +39,7 @@ public class Controller implements Initializable {
         for(int i=0 ; i<5 ; i++)
             gridPane.getRowConstraints().add(rowConstraints);
 
-        gridPane.setStyle("-fx-background-color : #ffeecc");
+        gridPane.setStyle("-fx-background-image : url('images/plateau.png')");
         console.setDisable(true);
     }
 

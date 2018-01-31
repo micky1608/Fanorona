@@ -140,6 +140,10 @@ public class Noeud extends Circle {
         }
     }
 
+    public void deselect() {
+        this.isNoeudSelected = false;
+    }
+
     /**
      * Indique si le noeud passé en parametre est un voisin
      * @param noeudDepartMouvement
