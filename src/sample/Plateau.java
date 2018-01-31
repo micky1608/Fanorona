@@ -5,9 +5,12 @@ public class Plateau {
     // La matrice qui contient tous les noeuds du plateau
     private Noeud[][] noeuds;
 
+    private static Controller controller = null;
+
 
     public Plateau () {
         this.noeuds = new Noeud[9][5];
+        controller = Main.getController();
         creerNoeuds();
         afficheNoeuds();
     }
@@ -18,7 +21,7 @@ public class Plateau {
     private void creerNoeuds() {
         for(int i=0 ; i<9 ; i++) {
             for(int j=0 ; j<5 ; j++) {
-                noeuds[i][j] = new Noeud(i,j);
+                noeuds[i][j] = new Noeud(i,j , this);
                 switch(j) {
                     case 0 : case 1 :
                         noeuds[i][j].setContainsPion(true , 1);
@@ -44,7 +47,7 @@ public class Plateau {
 
 
     /**
-     * indique si au moins un noeud est selectionne pour faire un mouvement
+     * indique si un noeud qui contient un pion est selectionne pour faire un mouvement
      * @return
      */
     public boolean existNoeudSelected() {
@@ -53,8 +56,7 @@ public class Plateau {
     }
 
     /**
-     * @return le noeud actuellement selectionne s'il y en a un (un seul)
-     * @return null si aucun noeud n'est selectionne ou plusieurs sont selectionnés
+     * @return le noeud qui contient un pion actuellement selectionne s'il y en a un (un seul)
      */
     public Noeud getNoeudSelected() {
         //TODO
@@ -64,7 +66,9 @@ public class Plateau {
     private void afficheNoeuds() {
         for(int i=0 ; i<9 ; i++) {
             for (int j = 0; j < 5; j++) {
+                // Affichage dans la console
                 System.out.println(noeuds[i][j]);
+                controller.addNoeud(noeuds[i][j] , i , j);
             }
         }
     }

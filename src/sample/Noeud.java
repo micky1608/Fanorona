@@ -8,6 +8,7 @@ public class Noeud extends Circle {
 
     private boolean containsPion;
     private boolean isNoeudSelected;
+    private Plateau plateau;
 
     // La position du noeud sur la grille du plateau
     // L'origine du repère est en haut à gauche
@@ -21,13 +22,12 @@ public class Noeud extends Circle {
     private int posX;
     private int posY;
 
-    private static final double RAYON_NOEUD_VIDE = 10;
-    private static final double RAYON_NOEUD_PION = 15;
+    private static final double RAYON_NOEUD_VIDE = 20;
+    private static final double RAYON_NOEUD_PION = 25;
     private static final Color COULEUR_UTILISATEUR = Color.WHITE;
     private static final Color COULEUR_ORDINATEUR = Color.BLACK;
     private static final Color COULEUR_VIDE = Color.GREY;
 
-    private static Controller controller = null;
 
 
     /**
@@ -36,15 +36,16 @@ public class Noeud extends Circle {
      * @param x
      * @param y
      */
-    public Noeud(int x , int y) throws IllegalArgumentException {
+    public Noeud(int x , int y , Plateau plateau) throws IllegalArgumentException {
         if(x < 0 || x > 8 || y < 0 || y > 4)
             throw new IllegalArgumentException();
 
         this.posX = x;
         this.posY = y;
+        this.plateau = plateau;
         this.isNoeudSelected = false;
-        if(controller == null)
-            controller = Main.getController();
+
+        this.setOnMouseClicked((event) -> this.select(true));
     }
 
     /**
@@ -105,15 +106,50 @@ public class Noeud extends Circle {
      */
     public void select (boolean selectByUser) {
         Paint couleurNoeud = this.getFill();
-        if(selectByUser) {
-            if(couleurNoeud.equals(Color.WHITE))
-                this.isNoeudSelected = true;
+
+        if(couleurNoeud.equals(Color.WHITE) || couleurNoeud.equals(Color.BLACK)) {
+
+            // On essaie de selectionner un pion donc aucun pion ne doit deja etre selectionne
+            if(!plateau.existNoeudSelected()) {
+
+                if (selectByUser) {
+                    if (couleurNoeud.equals(Color.WHITE))
+                        this.isNoeudSelected = true;
+                } else {
+                    if (couleurNoeud.equals(Color.BLACK))
+                        this.isNoeudSelected = true;
+                }
+            }
         }
         else {
-            if(couleurNoeud.equals(Color.BLACK))
-                this.isNoeudSelected = true;
+            // On selectionne une case vide donc un pion doit etre selectionne
+            if(plateau.existNoeudSelected()) {
+                Noeud noeudDepartMouvement = plateau.getNoeudSelected();
+                if(this.isVoisinOf(noeudDepartMouvement)) {
+
+                    // on indique que le noeud de départ devient vide
+                    noeudDepartMouvement.setContainsPion(false , 2);
+
+                    // on remplit le noeud destination
+                    int codeCouleur = 2;
+                    if(noeudDepartMouvement.getFill().equals(Color.WHITE)) codeCouleur = 0;
+                    if(noeudDepartMouvement.getFill().equals(Color.BLACK)) codeCouleur = 1;
+                    this.setContainsPion(true , codeCouleur);
+                }
+            }
         }
     }
+
+    /**
+     * Indique si le noeud passé en parametre est un voisin
+     * @param noeudDepartMouvement
+     * @return
+     */
+    private boolean isVoisinOf(Noeud noeudDepartMouvement) {
+        //TODO
+        return false;
+    }
+
 
     @Override
     public String toString() {
