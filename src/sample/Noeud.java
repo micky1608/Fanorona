@@ -11,6 +11,7 @@ public class Noeud extends Circle {
 
     private boolean containsPion;
     private boolean isNoeudSelected;
+    private boolean isPaire;
     private Plateau plateau;
 
     // La position du noeud sur la grille du plateau
@@ -48,6 +49,9 @@ public class Noeud extends Circle {
         this.posY = y;
         this.plateau = plateau;
         this.isNoeudSelected = false;
+
+        if((x+y)%2==0){this.isPaire = true; }
+        else{this.isPaire = false; }
 
         this.setOnMouseClicked((event) -> {
                 if(!this.isNoeudSelected())
@@ -185,10 +189,23 @@ public class Noeud extends Circle {
     private boolean isVoisinOf(Noeud otherNoeud) {
         int posX_other = otherNoeud.getX();
         int posY_other = otherNoeud.getY();
+        
+        //Un noeud ne peut pas être voisin de lui-même
+        if(otherNoeud == this){
+            return false;
+        }
 
-        if(posX_other == posX || posX_other == posX - 1 || posX_other == posX + 1 )
-            return (posY_other == posY || posY_other == posY - 1 || posY_other == posY + 1 ) ? true : false;
-
+        //Les noeuds paires peuvent avoir des voisins en diagonal, contrairement aux pions impaires
+        if(isPaire) {
+            if (posX_other == posX || posX_other == posX - 1 || posX_other == posX + 1)
+                return (posY_other == posY || posY_other == posY - 1 || posY_other == posY + 1) ? true : false;
+        }
+        else{
+            if(posX_other == posX)
+                return (posY_other == posY - 1 || posY_other == posY + 1) ? true : false;
+            if(posY_other == posY)
+                return (posX_other == posX - 1 || posX_other == posX + 1) ? true : false;
+        }
         return false;
     }
 
