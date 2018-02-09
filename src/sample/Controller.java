@@ -56,4 +56,12 @@ public class Controller implements Initializable {
             GridPane.setValignment(noeud , VPos.CENTER);
         });
     }
+
+    /**
+     * Permet de modifier le texte du TextArea
+     * @Param texte
+     */
+    public void setTexte (String texte){
+        console.setText(console.getText()+"\n"+texte);
+    }
 }

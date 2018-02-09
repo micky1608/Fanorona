@@ -11,6 +11,8 @@ public class Noeud extends Circle {
 
     private boolean containsPion;
     private boolean isNoeudSelected;
+    private boolean isAspirable;
+    private boolean isPercutable;
     private boolean isPaire;
     private Plateau plateau;
 
@@ -54,7 +56,12 @@ public class Noeud extends Circle {
         else{this.isPaire = false; }
 
         this.setOnMouseClicked((event) -> {
-                if(!this.isNoeudSelected())
+                if(this.isPercutable)
+                    this.exclure(1);
+                if(this.isAspirable){
+                    this.exclure(0);
+                }
+                if(!this.isNoeudSelected()&&!this.plateau.existNoeudAspirable()&&!this.plateau.existNoeudPercutable())
                     this.select(true);
                 else
                     this.deselect();
@@ -88,6 +95,22 @@ public class Noeud extends Circle {
 
     public static double getRayonNoeudPionSelected() {
         return RAYON_NOEUD_PION_SELECTED;
+    }
+
+    public void setPercutable(boolean val){
+        this.isPercutable=val;
+    }
+
+    public void setAspirable(boolean val){
+        this.isAspirable=val;
+    }
+
+    public boolean getAspirable(){
+        return isAspirable;
+    }
+
+    public boolean getPercutable(){
+        return isPercutable;
     }
 
     /**
@@ -172,6 +195,8 @@ public class Noeud extends Circle {
 
                     // on remplit le noeud destination
                     this.setContainsPion(true , codeCouleur);
+
+                    this.plateau.choisirPionsAExclure(noeudDepartMouvement, this);
                 }
             }
         }
@@ -179,6 +204,10 @@ public class Noeud extends Circle {
 
     public void deselect() {
         this.isNoeudSelected = false;
+    }
+
+    public void exclure(int choix){
+        plateau.exclurePions(choix);
     }
 
     /**
@@ -189,7 +218,7 @@ public class Noeud extends Circle {
     private boolean isVoisinOf(Noeud otherNoeud) {
         int posX_other = otherNoeud.getX();
         int posY_other = otherNoeud.getY();
-        
+
         //Un noeud ne peut pas être voisin de lui-même
         if(otherNoeud == this){
             return false;
