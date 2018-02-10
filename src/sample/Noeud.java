@@ -116,7 +116,6 @@ public class Noeud extends Circle {
 
     /**
      * Updates the boolean which indicates if the node contains a pawn or not, and updates he size and color.
-     * Met a jour le booleen qui indique si le noeud contient un pion et met a jour le rayon du cercle ainsi que sa couleur
      * @param containsPion
      * @param codeCouleur defines the new color of the node.
      *                    0 : Player's color (white)
@@ -223,12 +222,11 @@ public class Noeud extends Circle {
         int posX_other = otherNoeud.getX();
         int posY_other = otherNoeud.getY();
 
-        //Un noeud ne peut pas être voisin de lui-même
+        //A node can't be neighbor of himself.
         if(otherNoeud == this){
             return false;
         }
-
-        //Les noeuds paires peuvent avoir des voisins en diagonal, contrairement aux pions impaires
+        //An even node can have diagonal neighbors, while an odd node can't.
         if(isPaire) {
             if (posX_other == posX || posX_other == posX - 1 || posX_other == posX + 1)
                 return (posY_other == posY || posY_other == posY - 1 || posY_other == posY + 1) ? true : false;
