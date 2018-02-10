@@ -24,7 +24,7 @@ public class Controller implements Initializable {
 
 
     /**
-     * On initialise la taille des lignes et colonnes du GridPane
+     * Initialisation of line and column sizes for the GridPane
      * @param location
      * @param resources
      */
@@ -44,7 +44,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Permet d'inserer un noeud dans une case du gridPane si aucun noeud ne s'y trouve déjà
+     * Add a node in a cell of the GridPane if it's empty.
      * @param x
      * @param y
      */
@@ -58,7 +58,7 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Permet de modifier le texte du TextArea
+     * Allows to change the text of the TextArea.
      * @Param texte
      */
     public void setTexte (String texte){

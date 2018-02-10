@@ -16,8 +16,8 @@ public class Noeud extends Circle {
     private boolean isPaire;
     private Plateau plateau;
 
-    // La position du noeud sur la grille du plateau
-    // L'origine du repère est en haut à gauche
+    // Positions of the nodes in the grid.
+    // The origin is on the top left corner.
     /*
         (0,0) (1,0) (2,0) (3,0) (4,0) (5,0) (6,0) (7,0) (8,0)
         (0,1) (1,1) (2,1) (3,1) (4,1) (5,1) (6,1) (7,1) (8,1)
@@ -38,8 +38,8 @@ public class Noeud extends Circle {
 
 
     /**
-     * CONSTRUCTEUR
-     * Crée un noeuds à la position demandée
+     * CONSTRUCTOR
+     * Create a node considering the position x and y.
      * @param x
      * @param y
      */
@@ -55,6 +55,7 @@ public class Noeud extends Circle {
         if((x+y)%2==0){this.isPaire = true; }
         else{this.isPaire = false; }
 
+        //The handler will be different considering the moment of the game.
         this.setOnMouseClicked((event) -> {
                 if(this.isPercutable)
                     this.exclure(1);
@@ -114,12 +115,13 @@ public class Noeud extends Circle {
     }
 
     /**
+     * Updates the boolean which indicates if the node contains a pawn or not, and updates he size and color.
      * Met a jour le booleen qui indique si le noeud contient un pion et met a jour le rayon du cercle ainsi que sa couleur
      * @param containsPion
-     * @param codeCouleur permet de definir la nouvelle couleur du noeud
-     *                    0 : Couleur des pions utilisateur
-     *                    1 : Couleur des pions ordinateur
-     *                    2 : Couleur noeud vide
+     * @param codeCouleur defines the new color of the node.
+     *                    0 : Player's color (white)
+     *                    1 : CPU's color (black)
+     *                    2 : Node is empty (grey)
      */
     public void setContainsPion (boolean containsPion , int codeCouleur) {
         if(codeCouleur < 0 ||  codeCouleur > 2)
@@ -152,17 +154,17 @@ public class Noeud extends Circle {
     }
 
     /**
-     * Permet de selectionner un noeud
-     * @param selectByUser indique si cette action est effectuée par l'utilisateur ou l'ordinateur
-     *                     true : utilisateur -> ne peut selectionner que des pions blancs
-     *                     false : ordinateur -> ne peut selectionner que des pions noirs
+     * Allows to select a node
+     * @param selectByUser indicates if the action is made by the player or the CPU.
+     *                     true : player -> can only select white pawns.
+     *                     false : CPU -> can only select black pawns.
      */
     public void select (boolean selectByUser) {
         Paint couleurNoeud = this.getFill();
 
         if(couleurNoeud.equals(Color.WHITE) || couleurNoeud.equals(Color.BLACK)) {
 
-            // On essaie de selectionner un pion donc aucun pion ne doit deja etre selectionne
+            // If we try to select a pawn, no other pawn should be selected at the same time.
             if(!plateau.existNoeudSelected()) {
 
                 if (selectByUser) {
@@ -176,24 +178,26 @@ public class Noeud extends Circle {
         }
         else {
 
-            // On selectionne une case vide donc un pion doit etre selectionne
+            // We selected an empty node, so there must be a pawn selected which will make
+            // the movement from his position to the empty node selected.
+            //The nodes must be neighbours
             if(plateau.existNoeudSelected()) {
                 Noeud noeudDepartMouvement = plateau.getNoeudSelected();
 
                 if(this.isVoisinOf(noeudDepartMouvement)) {
 
-                    // on recupere la couleur du noeud de départ
+                    // We get the color of the initial node.
                     int codeCouleur = 2;
                     if(noeudDepartMouvement.getFill().equals(Color.WHITE)) codeCouleur = 0;
                     if(noeudDepartMouvement.getFill().equals(Color.BLACK)) codeCouleur = 1;
 
-                    // on indique que le noeud de départ devient vide
+                    // Indicates that the initial node will now be empty.
                     noeudDepartMouvement.setContainsPion(false , 2);
 
-                    // on deselectionne le noeud de depart
+                    // The initial node won't be selected after this movement.
                     noeudDepartMouvement.deselect();
 
-                    // on remplit le noeud destination
+                    // The new node contains now a pawn, with the same color.
                     this.setContainsPion(true , codeCouleur);
 
                     this.plateau.choisirPionsAExclure(noeudDepartMouvement, this);
@@ -211,7 +215,7 @@ public class Noeud extends Circle {
     }
 
     /**
-     * Indique si le noeud passé en parametre est un voisin
+     * Indicates if the node is neighbor.
      * @param otherNoeud
      * @return
      */

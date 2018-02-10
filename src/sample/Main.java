@@ -21,7 +21,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
         Parent root = loader.load();
         this.controller = loader.getController();
-        primaryStage.setTitle("Hello World");
+        primaryStage.setTitle("Fanorona");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
 

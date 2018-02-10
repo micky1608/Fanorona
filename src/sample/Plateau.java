@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 public class Plateau {
 
-    // La matrice qui contient tous les noeuds du plateau
+    // The matrice that contains all the nodes.
     private Noeud[][] noeuds;
+
+    //Lists that contains the nodes which will be empty after a movement.
     private ArrayList<Noeud> noeudsPercussion;
     private ArrayList<Noeud> noeudsAspiration;
 
@@ -28,7 +30,7 @@ public class Plateau {
     }
 
     /**
-     * Instancie tous les noeuds du plateau
+     * Instantiate all the nodes
       */
     private void creerNoeuds() {
         for(int i=0 ; i<9 ; i++) {
@@ -60,7 +62,7 @@ public class Plateau {
 
 
     /**
-     * indique si un noeud qui contient un pion est selectionne pour faire un mouvement
+     * Indicates if a node is selected to make a movement.
      * @return
      */
     public boolean existNoeudSelected()  {
@@ -78,7 +80,7 @@ public class Plateau {
     }
 
     /**
-     * indique s'il existe au moins un noeud qui est en position de percussion
+     * Indicates if a node is in position of percussion.
      * @return
      */
     public boolean existNoeudPercutable() {
@@ -94,7 +96,7 @@ public class Plateau {
     }
 
     /**
-     * indique s'il existe au moins un noeud qui est en position d'aspiration
+     * indicates if a node is in position of aspiration.
      * @return
      */
     public boolean existNoeudAspirable() {
@@ -110,7 +112,7 @@ public class Plateau {
     }
 
     /**
-     * @return le noeud qui contient un pion actuellement selectionne s'il y en a un (un seul)
+     * @return the node which is selected, if there's one.
      */
     public Noeud getNoeudSelected() {
         if(existNoeudSelected()) {
@@ -135,7 +137,7 @@ public class Plateau {
     }
 
     /**
-     * Thread qui va ajuster la taille du noeud pour le faire grandir en cas de selection
+     * Thread which will adjust the node' size in case they are selected, or if they are in position of percussion or aspiration.
      */
     private class ThreadNoeud extends Thread {
 
@@ -159,7 +161,8 @@ public class Plateau {
     }
 
     /**
-     * Permet de trouver quels sont les pions à exclure, et ensuite de les exclure via la fonction exlurePions.
+     * The method will find which pawns can be excluded of the game, and then exclude them by calling exclurePions().
+     *
      * @param noeudDepart
      * @param noeudFin
      */
@@ -169,13 +172,14 @@ public class Plateau {
         int nbAspiration=0;
 
 
-        //On calcule la différence de coordonnée entre les noeuds
+        //Calculate the difference between the original node and the node we ended in.
         int diffX=(noeudFin.getX()-noeudDepart.getX());
         int diffY=(noeudFin.getY()-noeudDepart.getY());
+
         int verifierX=noeudFin.getX()+diffX;
         int verifierY=noeudFin.getY()+diffY;
 
-        //On calcul le nombre de pions pris en cas de percussion
+        //Calculate how many pawns will be collided
         while(verifierX >= 0 && verifierX <= 8 && verifierY >= 0 && verifierY <= 4){
             if(noeuds[verifierX][verifierY].isContainsPion()&&noeuds[verifierX][verifierY].getFill()!=noeudFin.getFill()){
                 nbPercussion++;
@@ -191,7 +195,7 @@ public class Plateau {
         verifierX=noeudDepart.getX()-diffX;
         verifierY=noeudDepart.getY()-diffY;
 
-        //On calcul le nombre de pions pris en cas d'aspiration
+        //Calculate how many pawns will be aspirated
         while(verifierX >= 0 && verifierX <= 8 && verifierY >= 0 && verifierY <= 4){
             if(noeuds[verifierX][verifierY].isContainsPion()&&noeuds[verifierX][verifierY].getFill()!=noeudFin.getFill()){
                 nbAspiration++;
@@ -203,14 +207,17 @@ public class Plateau {
                 break;
             }
         }
+        //If the number of pawns aspirated and collided are not the same, we exclude the highest number.
         if(nbAspiration>nbPercussion){
             exclurePions(0);
         }
         if(nbPercussion>nbAspiration){
             exclurePions(1);
         }
+
+        //If it is the same amounts, we give the choice to the player.
         if(nbPercussion==nbAspiration&&nbPercussion!=0){
-            //On fait grossir tous les pions percutable et aspirables.
+            //We make the pawns bigger so the user can see them easily.
             controller.setTexte("Choisissez entre percussion et aspiration");
             for(Noeud n:noeudsPercussion){
                 n.setPercutable(true);
@@ -222,8 +229,9 @@ public class Plateau {
     }
 
     /**
-     * Permet d'exclure les pions aspirés ou les pions percutés.
-     * @param choix
+     * Exclude the pawns.
+     * @param choix 0: exclude de panws in noeudsAspiration
+     *              1: exclude de pawns in noeudsPerussion
      */
     public void exclurePions(int choix){
         if(choix==0){
@@ -245,7 +253,7 @@ public class Plateau {
             }
         }
 
-        //On supprime tous les noeuds des listes pour pas qu'ils ne soient encore présents au prochain coup.
+        //We clear the lists so the same nodes won't be in the lists for the next movement.
         noeudsPercussion.clear();
         noeudsAspiration.clear();
     }
