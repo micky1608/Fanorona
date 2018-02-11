@@ -2,7 +2,7 @@ package sample;
 
 public class Partie extends Thread {
 
-    private Plateau plateau;
+    private Board board;
 
     public Partie() {
 
@@ -15,6 +15,6 @@ public class Partie extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        this.plateau = new Plateau();
+        this.board = new Board();
     }
 }

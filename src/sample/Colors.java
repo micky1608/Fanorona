@@ -1,14 +1,14 @@
 package sample;
 
-public enum Couleur {
+public enum Colors {
 
-    BLANC("BLANC") ,
-    NOIR("NOIR"),
-    VIDE("VIDE");
+    WHITE("WHITE") ,
+    BLACK("BLACK"),
+    EMPTY("EMPTY");
 
     private String stringCouleur;
 
-    Couleur(String stringCouleur) {
+    Colors(String stringCouleur) {
         this.stringCouleur = stringCouleur;
     }
 

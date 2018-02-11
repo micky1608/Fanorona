@@ -10,7 +10,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
-import java.lang.management.PlatformLoggingMXBean;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -48,12 +47,12 @@ public class Controller implements Initializable {
      * @param x
      * @param y
      */
-    public void addNoeud (Noeud noeud , int x , int y) {
-        GridPane.setConstraints(noeud , x , y);
+    public void addNoeud (Node node, int x , int y) {
+        GridPane.setConstraints(node, x , y);
         Platform.runLater( () -> {
-            gridPane.getChildren().add(noeud);
-            GridPane.setHalignment(noeud , HPos.CENTER);
-            GridPane.setValignment(noeud , VPos.CENTER);
+            gridPane.getChildren().add(node);
+            GridPane.setHalignment(node, HPos.CENTER);
+            GridPane.setValignment(node, VPos.CENTER);
         });
     }
 

@@ -1,20 +1,18 @@
 package sample;
 
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
 
-public class Noeud extends Circle {
+public class Node extends Circle {
 
-    private boolean containsPion;
-    private boolean isNoeudSelected;
+    private boolean containsPawn;
+    private boolean isNodeSelected;
     private boolean isAspirable;
     private boolean isPercutable;
-    private boolean isPaire;
-    private Plateau plateau;
+    private boolean isEven;
+    private Board board;
 
     // Positions of the nodes in the grid.
     // The origin is on the top left corner.
@@ -28,12 +26,12 @@ public class Noeud extends Circle {
     private int posX;
     private int posY;
 
-    private static final double RAYON_NOEUD_VIDE = 20;
-    private static final double RAYON_NOEUD_PION = 25;
-    private static final double RAYON_NOEUD_PION_SELECTED = 30;
-    private static final Color COULEUR_UTILISATEUR = Color.WHITE;
-    private static final Color COULEUR_ORDINATEUR = Color.BLACK;
-    private static final Color COULEUR_VIDE = Color.GREY;
+    private static final double RADIUS_NODE_EMPTY = 20;
+    private static final double RADIUS_NODE_PAWN = 25;
+    private static final double RADIUS_NODE_PAWN_SELECTED = 30;
+    private static final Color COLOR_PLAYER = Color.WHITE;
+    private static final Color COLOR_CPU = Color.BLACK;
+    private static final Color COLOR_EMPTY = Color.GREY;
 
 
 
@@ -43,26 +41,26 @@ public class Noeud extends Circle {
      * @param x
      * @param y
      */
-    public Noeud(int x , int y , Plateau plateau) throws IllegalArgumentException {
+    public Node(int x , int y , Board board) throws IllegalArgumentException {
         if(x < 0 || x > 8 || y < 0 || y > 4)
             throw new IllegalArgumentException();
 
         this.posX = x;
         this.posY = y;
-        this.plateau = plateau;
-        this.isNoeudSelected = false;
+        this.board = board;
+        this.isNodeSelected = false;
 
-        if((x+y)%2==0){this.isPaire = true; }
-        else{this.isPaire = false; }
+        if((x+y)%2==0){this.isEven = true; }
+        else{this.isEven = false; }
 
         //The handler will be different considering the moment of the game.
         this.setOnMouseClicked((event) -> {
                 if(this.isPercutable)
-                    this.exclure(1);
+                    this.exclude(1);
                 if(this.isAspirable){
-                    this.exclure(0);
+                    this.exclude(0);
                 }
-                if(!this.isNoeudSelected()&&!this.plateau.existNoeudAspirable()&&!this.plateau.existNoeudPercutable())
+                if(!this.isNodeSelected()&&!this.board.existNodeAspirable()&&!this.board.existNodePercutable())
                     this.select(true);
                 else
                     this.deselect();
@@ -82,20 +80,20 @@ public class Noeud extends Circle {
         return posY;
     }
 
-    public boolean isNoeudSelected () {
-        return this.isNoeudSelected;
+    public boolean isNodeSelected () {
+        return this.isNodeSelected;
     }
 
-    public boolean isContainsPion () {
-        return this.containsPion;
+    public boolean isContainsPawn () {
+        return this.containsPawn;
     }
 
-    public static double getRayonNoeudPion() {
-        return RAYON_NOEUD_PION;
+    public static double getRadiusNodePawn() {
+        return RADIUS_NODE_PAWN;
     }
 
-    public static double getRayonNoeudPionSelected() {
-        return RAYON_NOEUD_PION_SELECTED;
+    public static double getRadiusNodePawnnSelected() {
+        return RADIUS_NODE_PAWN_SELECTED;
     }
 
     public void setPercutable(boolean val){
@@ -116,40 +114,40 @@ public class Noeud extends Circle {
 
     /**
      * Updates the boolean which indicates if the node contains a pawn or not, and updates he size and color.
-     * @param containsPion
-     * @param codeCouleur defines the new color of the node.
+     * @param containsPawn
+     * @param colorCode defines the new color of the node.
      *                    0 : Player's color (white)
      *                    1 : CPU's color (black)
      *                    2 : Node is empty (grey)
      */
-    public void setContainsPion (boolean containsPion , int codeCouleur) {
-        if(codeCouleur < 0 ||  codeCouleur > 2)
+    public void setContainsPawn (boolean containsPawn , int colorCode) {
+        if(colorCode < 0 ||  colorCode > 2)
             throw new IllegalArgumentException();
 
-        this.containsPion = containsPion;
+        this.containsPawn = containsPawn;
 
-        Color couleur;
-        double rayon = 0;
+        Color color;
+        double radius = 0;
 
-        switch(codeCouleur) {
+        switch(colorCode) {
             case 0 :
-                couleur = COULEUR_UTILISATEUR;
+                color = COLOR_PLAYER;
                 break;
             case 1 :
-                couleur = COULEUR_ORDINATEUR;
+                color = COLOR_CPU;
                 break;
             default :
-                couleur = COULEUR_VIDE;
+                color = COLOR_EMPTY;
                 break;
         }
 
-        if(this.containsPion)
-            rayon = RAYON_NOEUD_PION;
+        if(this.containsPawn)
+            radius = RADIUS_NODE_PAWN;
         else
-            rayon = RAYON_NOEUD_VIDE;
+            radius = RADIUS_NODE_EMPTY;
 
-        this.setRadius(rayon);
-        this.setFill(couleur);
+        this.setRadius(radius);
+        this.setFill(color);
     }
 
     /**
@@ -159,19 +157,19 @@ public class Noeud extends Circle {
      *                     false : CPU -> can only select black pawns.
      */
     public void select (boolean selectByUser) {
-        Paint couleurNoeud = this.getFill();
+        Paint colorNode = this.getFill();
 
-        if(couleurNoeud.equals(Color.WHITE) || couleurNoeud.equals(Color.BLACK)) {
+        if(colorNode.equals(Color.WHITE) || colorNode.equals(Color.BLACK)) {
 
             // If we try to select a pawn, no other pawn should be selected at the same time.
-            if(!plateau.existNoeudSelected()) {
+            if(!board.existNodeSelected()) {
 
                 if (selectByUser) {
-                    if (couleurNoeud.equals(Color.WHITE))
-                        this.isNoeudSelected = true;
+                    if (colorNode.equals(Color.WHITE))
+                        this.isNodeSelected = true;
                 } else {
-                    if (couleurNoeud.equals(Color.BLACK))
-                        this.isNoeudSelected = true;
+                    if (colorNode.equals(Color.BLACK))
+                        this.isNodeSelected = true;
                 }
             }
         }
@@ -180,54 +178,54 @@ public class Noeud extends Circle {
             // We selected an empty node, so there must be a pawn selected which will make
             // the movement from his position to the empty node selected.
             //The nodes must be neighbours
-            if(plateau.existNoeudSelected()) {
-                Noeud noeudDepartMouvement = plateau.getNoeudSelected();
+            if(board.existNodeSelected()) {
+                Node nodeBeginningMovement = board.getNodeSelected();
 
-                if(this.isVoisinOf(noeudDepartMouvement)) {
+                if(this.isNeighborOf(nodeBeginningMovement)) {
 
                     // We get the color of the initial node.
-                    int codeCouleur = 2;
-                    if(noeudDepartMouvement.getFill().equals(Color.WHITE)) codeCouleur = 0;
-                    if(noeudDepartMouvement.getFill().equals(Color.BLACK)) codeCouleur = 1;
+                    int colorCode = 2;
+                    if(nodeBeginningMovement.getFill().equals(Color.WHITE)) colorCode = 0;
+                    if(nodeBeginningMovement.getFill().equals(Color.BLACK)) colorCode = 1;
 
                     // Indicates that the initial node will now be empty.
-                    noeudDepartMouvement.setContainsPion(false , 2);
+                    nodeBeginningMovement.setContainsPawn(false , 2);
 
                     // The initial node won't be selected after this movement.
-                    noeudDepartMouvement.deselect();
+                    nodeBeginningMovement.deselect();
 
                     // The new node contains now a pawn, with the same color.
-                    this.setContainsPion(true , codeCouleur);
+                    this.setContainsPawn(true , colorCode);
 
-                    this.plateau.choisirPionsAExclure(noeudDepartMouvement, this);
+                    this.board.choosePawnsToExclude(nodeBeginningMovement, this);
                 }
             }
         }
     }
 
     public void deselect() {
-        this.isNoeudSelected = false;
+        this.isNodeSelected = false;
     }
 
-    public void exclure(int choix){
-        plateau.exclurePions(choix);
+    public void exclude(int choice){
+        board.excludePawns(choice);
     }
 
     /**
      * Indicates if the node is neighbor.
-     * @param otherNoeud
+     * @param otherNode
      * @return
      */
-    private boolean isVoisinOf(Noeud otherNoeud) {
-        int posX_other = otherNoeud.getX();
-        int posY_other = otherNoeud.getY();
+    private boolean isNeighborOf(Node otherNode) {
+        int posX_other = otherNode.getX();
+        int posY_other = otherNode.getY();
 
         //A node can't be neighbor of himself.
-        if(otherNoeud == this){
+        if(otherNode == this){
             return false;
         }
         //An even node can have diagonal neighbors, while an odd node can't.
-        if(isPaire) {
+        if(isEven) {
             if (posX_other == posX || posX_other == posX - 1 || posX_other == posX + 1)
                 return (posY_other == posY || posY_other == posY - 1 || posY_other == posY + 1) ? true : false;
         }
@@ -243,7 +241,7 @@ public class Noeud extends Circle {
 
     @Override
     public String toString() {
-        return "Noeud { " + "containsPion = " + containsPion + ", posX = " + posX + ", posY = " + posY + ", couleur = " + this.getFill().toString() + ", isNoeudSelected = " + isNoeudSelected + " }";
+        return "Node { " + "containsPion = " + containsPawn + ", posX = " + posX + ", posY = " + posY + ", couleur = " + this.getFill().toString() + ", isNoeudSelected = " + isNodeSelected + " }";
     }
 
 }

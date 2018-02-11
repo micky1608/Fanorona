@@ -2,60 +2,60 @@ package sample;
 
 import java.util.ArrayList;
 
-public class Plateau {
+public class Board {
 
     // The matrice that contains all the nodes.
-    private Noeud[][] noeuds;
+    private Node[][] nodes;
 
     //Lists that contains the nodes which will be empty after a movement.
-    private ArrayList<Noeud> noeudsPercussion;
-    private ArrayList<Noeud> noeudsAspiration;
+    private ArrayList<Node> nodesPercussion;
+    private ArrayList<Node> nodesAspiration;
 
     private static Controller controller = null;
 
 
-    public Plateau () {
-        this.noeuds = new Noeud[9][5];
+    public Board() {
+        this.nodes = new Node[9][5];
         controller = Main.getController();
-        creerNoeuds();
+        createNodes();
 
-        ThreadNoeud threadNoeud = new ThreadNoeud();
-        threadNoeud.setDaemon(true);
-        threadNoeud.start();
+        ThreadNode threadNode = new ThreadNode();
+        threadNode.setDaemon(true);
+        threadNode.start();
 
-        afficheNoeuds();
+        displayNodes();
 
-        this.noeudsAspiration=new ArrayList<>();
-        this.noeudsPercussion=new ArrayList<>();
+        this.nodesAspiration=new ArrayList<>();
+        this.nodesPercussion=new ArrayList<>();
     }
 
     /**
      * Instantiate all the nodes
       */
-    private void creerNoeuds() {
+    private void createNodes() {
         for(int i=0 ; i<9 ; i++) {
             for(int j=0 ; j<5 ; j++) {
-                noeuds[i][j] = new Noeud(i,j , this);
+                nodes[i][j] = new Node(i,j , this);
                 switch(j) {
                     case 0 : case 1 :
-                        noeuds[i][j].setContainsPion(true , 1);
+                        nodes[i][j].setContainsPawn(true , 1);
                         break;
                     case 2 :
                         if(i != 4) {
                             if(i%2 == 0)
-                                noeuds[i][j].setContainsPion(true , 0);
+                                nodes[i][j].setContainsPawn(true , 0);
                             else
-                                noeuds[i][j].setContainsPion(true , 1);
+                                nodes[i][j].setContainsPawn(true , 1);
                         }
                         else {
-                            noeuds[i][j].setContainsPion(false , 2);
+                            nodes[i][j].setContainsPawn(false , 2);
                         }
                         break;
                     case 3 : case 4 :
-                        noeuds[i][j].setContainsPion(true , 0);
+                        nodes[i][j].setContainsPawn(true , 0);
                         break;
                 }
-                controller.addNoeud(noeuds[i][j] , i , j);
+                controller.addNoeud(nodes[i][j] , i , j);
             }
         }
     }
@@ -65,11 +65,11 @@ public class Plateau {
      * Indicates if a node is selected to make a movement.
      * @return
      */
-    public boolean existNoeudSelected()  {
+    public boolean existNodeSelected()  {
         boolean result = false;
         for(int i=0 ; i<9 ; i++) {
             for(int j=0 ; j<5 ; j++) {
-                if(noeuds[i][j].isNoeudSelected()) {
+                if(nodes[i][j].isNodeSelected()) {
                     if(result)
                         System.out.println("Double selection");
                     result = true;
@@ -83,11 +83,11 @@ public class Plateau {
      * Indicates if a node is in position of percussion.
      * @return
      */
-    public boolean existNoeudPercutable() {
+    public boolean existNodePercutable() {
         boolean result = false;
         for(int i=0 ; i<9 ; i++) {
             for (int j = 0; j < 5; j++) {
-                if (noeuds[i][j].getPercutable()) {
+                if (nodes[i][j].getPercutable()) {
                     result = true;
                 }
             }
@@ -99,11 +99,11 @@ public class Plateau {
      * indicates if a node is in position of aspiration.
      * @return
      */
-    public boolean existNoeudAspirable() {
+    public boolean existNodeAspirable() {
         boolean result = false;
         for(int i=0 ; i<9 ; i++) {
             for (int j = 0; j < 5; j++) {
-                if (noeuds[i][j].getAspirable()) {
+                if (nodes[i][j].getAspirable()) {
                     result = true;
                 }
             }
@@ -114,23 +114,23 @@ public class Plateau {
     /**
      * @return the node which is selected, if there's one.
      */
-    public Noeud getNoeudSelected() {
-        if(existNoeudSelected()) {
+    public Node getNodeSelected() {
+        if(existNodeSelected()) {
             for(int i=0 ; i<9 ; i++) {
                 for (int j = 0; j < 5; j++) {
-                    if(noeuds[i][j].isNoeudSelected())
-                        return noeuds[i][j];
+                    if(nodes[i][j].isNodeSelected())
+                        return nodes[i][j];
                 }
             }
         }
         return null;
     }
 
-    private void afficheNoeuds() {
+    private void displayNodes() {
         for(int i=0 ; i<9 ; i++) {
             for (int j = 0; j < 5; j++) {
                 // Affichage dans la console
-                //System.out.println(noeuds[i][j]);
+                //System.out.println(nodes[i][j]);
 
             }
         }
@@ -139,20 +139,20 @@ public class Plateau {
     /**
      * Thread which will adjust the node' size in case they are selected, or if they are in position of percussion or aspiration.
      */
-    private class ThreadNoeud extends Thread {
+    private class ThreadNode extends Thread {
 
         @Override
         public void run() {
             while(true) {
                 for(int i=0 ; i<9 ; i++) {
                     for(int j=0 ; j<5 ; j++) {
-                        if(noeuds[i][j].isContainsPion()) {
+                        if(nodes[i][j].isContainsPawn()) {
 
-                            if((noeuds[i][j].isNoeudSelected() || noeuds[i][j].getPercutable() || noeuds[i][j].getAspirable()) && noeuds[i][j].getRadius() != Noeud.getRayonNoeudPionSelected())
-                                noeuds[i][j].setRadius(Noeud.getRayonNoeudPionSelected());
+                            if((nodes[i][j].isNodeSelected() || nodes[i][j].getPercutable() || nodes[i][j].getAspirable()) && nodes[i][j].getRadius() != Node.getRadiusNodePawnnSelected())
+                                nodes[i][j].setRadius(Node.getRadiusNodePawnnSelected());
 
-                            else if(!(noeuds[i][j].isNoeudSelected() || noeuds[i][j].getPercutable() || noeuds[i][j].getAspirable()) && noeuds[i][j].getRadius() != Noeud.getRayonNoeudPion())
-                                noeuds[i][j].setRadius(Noeud.getRayonNoeudPion());
+                            else if(!(nodes[i][j].isNodeSelected() || nodes[i][j].getPercutable() || nodes[i][j].getAspirable()) && nodes[i][j].getRadius() != Node.getRadiusNodePawn())
+                                nodes[i][j].setRadius(Node.getRadiusNodePawn());
                         }
                     }
                 }
@@ -163,45 +163,45 @@ public class Plateau {
     /**
      * The method will find which pawns can be excluded of the game, and then exclude them by calling exclurePions().
      *
-     * @param noeudDepart
-     * @param noeudFin
+     * @param nodeBeginning
+     * @param nodeEnd
      */
-    public void choisirPionsAExclure(Noeud noeudDepart, Noeud noeudFin){
+    public void choosePawnsToExclude(Node nodeBeginning, Node nodeEnd){
 
         int nbPercussion=0;
         int nbAspiration=0;
 
 
         //Calculate the difference between the original node and the node we ended in.
-        int diffX=(noeudFin.getX()-noeudDepart.getX());
-        int diffY=(noeudFin.getY()-noeudDepart.getY());
+        int diffX=(nodeEnd.getX()- nodeBeginning.getX());
+        int diffY=(nodeEnd.getY()- nodeBeginning.getY());
 
-        int verifierX=noeudFin.getX()+diffX;
-        int verifierY=noeudFin.getY()+diffY;
+        int verifyX= nodeEnd.getX()+diffX;
+        int verifyY= nodeEnd.getY()+diffY;
 
         //Calculate how many pawns will be collided
-        while(verifierX >= 0 && verifierX <= 8 && verifierY >= 0 && verifierY <= 4){
-            if(noeuds[verifierX][verifierY].isContainsPion()&&noeuds[verifierX][verifierY].getFill()!=noeudFin.getFill()){
+        while(verifyX >= 0 && verifyX <= 8 && verifyY >= 0 && verifyY <= 4){
+            if(nodes[verifyX][verifyY].isContainsPawn()&& nodes[verifyX][verifyY].getFill()!= nodeEnd.getFill()){
                 nbPercussion++;
-                noeudsPercussion.add(noeuds[verifierX][verifierY]);
-                verifierX+=diffX;
-                verifierY+=diffY;
+                nodesPercussion.add(nodes[verifyX][verifyY]);
+                verifyX+=diffX;
+                verifyY+=diffY;
             }
             else{
                 break;
             }
         }
 
-        verifierX=noeudDepart.getX()-diffX;
-        verifierY=noeudDepart.getY()-diffY;
+        verifyX= nodeBeginning.getX()-diffX;
+        verifyY= nodeBeginning.getY()-diffY;
 
         //Calculate how many pawns will be aspirated
-        while(verifierX >= 0 && verifierX <= 8 && verifierY >= 0 && verifierY <= 4){
-            if(noeuds[verifierX][verifierY].isContainsPion()&&noeuds[verifierX][verifierY].getFill()!=noeudFin.getFill()){
+        while(verifyX >= 0 && verifyX <= 8 && verifyY >= 0 && verifyY <= 4){
+            if(nodes[verifyX][verifyY].isContainsPawn()&& nodes[verifyX][verifyY].getFill()!= nodeEnd.getFill()){
                 nbAspiration++;
-                noeudsAspiration.add(noeuds[verifierX][verifierY]);
-                verifierX-=diffX;
-                verifierY-=diffY;
+                nodesAspiration.add(nodes[verifyX][verifyY]);
+                verifyX-=diffX;
+                verifyY-=diffY;
             }
             else{
                 break;
@@ -209,52 +209,52 @@ public class Plateau {
         }
         //If the number of pawns aspirated and collided are not the same, we exclude the highest number.
         if(nbAspiration>nbPercussion){
-            exclurePions(0);
+            excludePawns(0);
         }
         if(nbPercussion>nbAspiration){
-            exclurePions(1);
+            excludePawns(1);
         }
 
         //If it is the same amounts, we give the choice to the player.
         if(nbPercussion==nbAspiration&&nbPercussion!=0){
             //We make the pawns bigger so the user can see them easily.
             controller.setTexte("Choisissez entre percussion et aspiration");
-            for(Noeud n:noeudsPercussion){
+            for(Node n:nodesPercussion){
                 n.setPercutable(true);
             }
-            for(Noeud n:noeudsAspiration){
+            for(Node n:nodesAspiration){
                 n.setAspirable(true);
             }
         }
     }
 
     /**
-     * Exclude the pawns.
-     * @param choix 0: exclude de panws in noeudsAspiration
+     * Exclude the pawns depending of the choice.
+     * @param choice 0: exclude de panws in noeudsAspiration
      *              1: exclude de pawns in noeudsPerussion
      */
-    public void exclurePions(int choix){
-        if(choix==0){
-            for(Noeud n:noeudsAspiration){
-                n.setContainsPion(false,2);
+    public void excludePawns(int choice){
+        if(choice==0){
+            for(Node n:nodesAspiration){
+                n.setContainsPawn(false,2);
                 n.setAspirable(false);
             }
-            for(Noeud n:noeudsPercussion){
+            for(Node n:nodesPercussion){
                 n.setPercutable(false);
             }
         }
-        if(choix==1){
-            for(Noeud n:noeudsPercussion){
-                n.setContainsPion(false,2);
+        if(choice==1){
+            for(Node n:nodesPercussion){
+                n.setContainsPawn(false,2);
                 n.setPercutable(false);
             }
-            for(Noeud n:noeudsPercussion){
+            for(Node n:nodesAspiration){
                 n.setAspirable(false);
             }
         }
 
         //We clear the lists so the same nodes won't be in the lists for the next movement.
-        noeudsPercussion.clear();
-        noeudsAspiration.clear();
+        nodesPercussion.clear();
+        nodesAspiration.clear();
     }
 }

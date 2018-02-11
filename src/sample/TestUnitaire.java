@@ -7,12 +7,12 @@ public class TestUnitaire {
 
     @Test
     public void testEqualsCouleur() {
-        Couleur blanc = Couleur.BLANC;
-        Couleur noir = Couleur.NOIR;
-        Assert.assertEquals(true , blanc.equals(blanc));
-        Assert.assertEquals(true , noir.equals(noir));
-        Assert.assertEquals(false , blanc.equals(noir));
-        Assert.assertEquals(false , noir.equals(blanc));
+        Colors white = Colors.WHITE;
+        Colors black = Colors.BLACK;
+        Assert.assertEquals(true , white.equals(white));
+        Assert.assertEquals(true , black.equals(black));
+        Assert.assertEquals(false , white.equals(black));
+        Assert.assertEquals(false , black.equals(white));
     }
 
 
