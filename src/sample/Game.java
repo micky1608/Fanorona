@@ -3,10 +3,10 @@ package sample;
 public class Game extends Thread {
 
     private Board board;
+    private Player computer;
+    private Player user;
 
-    public Game() {
 
-    }
 
     @Override
     public void run() {
@@ -16,5 +16,31 @@ public class Game extends Thread {
             e.printStackTrace();
         }
         this.board = new Board();
+        this.computer = new Computer();
+        this.user = new User();
     }
+
+    /**
+     * Indicate if the game is over
+     * @return
+     */
+    private boolean isGameOver() {
+        //TODO
+        return false;
+    }
+
+    /**
+     * Return the player who is turn to play
+     * @return
+     */
+    private Player getActivePlayer () {
+        //TODO
+        return null;
+    }
+
+
+
+
+
+
 }
