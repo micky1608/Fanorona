@@ -68,7 +68,7 @@ public class Node extends Circle {
                 }
 
                 // The button is clicked to be selected or deselected
-                // We can do this action only when all the node are not percutables nor aspirables
+                // We can do this action only when all the nodes are not percutables nor aspirables
                 if(!this.isNodeSelected()&&!this.board.existNodeAspirable()&&!this.board.existNodePercutable())
                     this.select(true);
                 else
