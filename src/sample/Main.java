@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -30,8 +29,8 @@ public class Main extends Application {
 
 
     public static void main(String[] args) {
-        Partie partie = new Partie();
-        partie.start();
+        Game game = new Game();
+        game.start();
         launch(args);
 
 

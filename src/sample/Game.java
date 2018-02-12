@@ -1,10 +1,10 @@
 package sample;
 
-public class Partie extends Thread {
+public class Game extends Thread {
 
     private Board board;
 
-    public Partie() {
+    public Game() {
 
     }
 

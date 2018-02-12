@@ -11,7 +11,10 @@ public class Node extends Circle {
     private boolean isNodeSelected;
     private boolean isAspirable;
     private boolean isPercutable;
+
+    // A node is even when having 8 neighbours (or 3 when is in a corner)
     private boolean isEven;
+
     private Board board;
 
     // Positions of the nodes in the grid.
@@ -55,11 +58,17 @@ public class Node extends Circle {
 
         //The handler will be different considering the moment of the game.
         this.setOnMouseClicked((event) -> {
+
+                // The button was clicked when choosing beetween percussion and aspiration
+                // Here we don't select a node to move
                 if(this.isPercutable)
                     this.exclude(1);
                 if(this.isAspirable){
                     this.exclude(0);
                 }
+
+                // The button is clicked to be selected or deselected
+                // We can do this action only when all the node are not percutables nor aspirables
                 if(!this.isNodeSelected()&&!this.board.existNodeAspirable()&&!this.board.existNodePercutable())
                     this.select(true);
                 else

@@ -8,6 +8,6 @@
    <children>
       <GridPane fx:id="gridPane" prefHeight="500.0" prefWidth="900.0">
       </GridPane>
-      <TextArea fx:id="console" layoutY="510.0" prefHeight="90.0" prefWidth="900.0" />
+      <TextArea fx:id="console" layoutY="500.0" prefHeight="100.0" prefWidth="900.0" />
    </children>
 </AnchorPane>

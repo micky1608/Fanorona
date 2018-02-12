@@ -161,8 +161,8 @@ public class Board {
     }
 
     /**
-     * The method will find which pawns can be excluded of the game, and then exclude them by calling exclurePions().
-     *
+     * The method will find which pawns can be excluded of the game, and then exclude them by calling excludePawn().
+     * This is called after a pawn is moved to check the possible captures
      * @param nodeBeginning
      * @param nodeEnd
      */
@@ -172,10 +172,12 @@ public class Board {
         int nbAspiration=0;
 
 
-        //Calculate the difference between the original node and the node we ended in.
+        // Calculate the difference between the original node and the node we ended in.
+        // Doing that, we can get the direction of the deplacement
         int diffX=(nodeEnd.getX()- nodeBeginning.getX());
         int diffY=(nodeEnd.getY()- nodeBeginning.getY());
 
+        // verifyX and verifyY are the coordinates of the nodes that we will check if they are percutables or aspirables after this movement
         int verifyX= nodeEnd.getX()+diffX;
         int verifyY= nodeEnd.getY()+diffY;
 
@@ -230,8 +232,8 @@ public class Board {
 
     /**
      * Exclude the pawns depending of the choice.
-     * @param choice 0: exclude de panws in noeudsAspiration
-     *              1: exclude de pawns in noeudsPerussion
+     * @param choice 0: exclude the panws by aspiration
+     *              1: exclude the pawns by collision
      */
     public void excludePawns(int choice){
         if(choice==0){
