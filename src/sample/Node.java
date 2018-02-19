@@ -29,7 +29,7 @@ public class Node extends Circle {
     private int posX;
     private int posY;
 
-    private static final double RADIUS_NODE_EMPTY = 20;
+    private static final double RADIUS_NODE_EMPTY = 15;
     private static final double RADIUS_NODE_PAWN = 25;
     private static final double RADIUS_NODE_PAWN_SELECTED = 30;
     private static final Color COLOR_PLAYER = Color.WHITE;

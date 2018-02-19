@@ -38,7 +38,7 @@ public class Controller implements Initializable {
         for(int i=0 ; i<5 ; i++)
             gridPane.getRowConstraints().add(rowConstraints);
 
-        gridPane.setStyle("-fx-background-image : url('images/plateau.png')");
+        gridPane.setStyle("-fx-background-image : url('images/plateau.jpg')");
         console.setDisable(true);
     }
 
