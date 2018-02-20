@@ -32,7 +32,7 @@ public class Node extends Circle {
     private static final double RADIUS_NODE_EMPTY = 15;
     private static final double RADIUS_NODE_PAWN = 25;
     private static final double RADIUS_NODE_PAWN_SELECTED = 30;
-    private static final Color COLOR_PLAYER = Color.WHITE;
+    private static final Color COLOR_USER = Color.WHITE;
     private static final Color COLOR_CPU = Color.BLACK;
     private static final Color COLOR_EMPTY = Color.GREY;
 
@@ -105,6 +105,14 @@ public class Node extends Circle {
         return RADIUS_NODE_PAWN_SELECTED;
     }
 
+    public static Color getColorUser() {
+        return COLOR_USER;
+    }
+
+    public static Color getColorCpu() {
+        return COLOR_CPU;
+    }
+
     public void setPercutable(boolean val){
         this.isPercutable=val;
     }
@@ -140,7 +148,7 @@ public class Node extends Circle {
 
         switch(colorCode) {
             case 0 :
-                color = COLOR_PLAYER;
+                color = COLOR_USER;
                 break;
             case 1 :
                 color = COLOR_CPU;
@@ -168,16 +176,16 @@ public class Node extends Circle {
     public void select (boolean selectByUser) {
         Paint colorNode = this.getFill();
 
-        if(colorNode.equals(Color.WHITE) || colorNode.equals(Color.BLACK)) {
+        if(colorNode.equals(COLOR_USER) || colorNode.equals(COLOR_CPU)) {
 
             // If we try to select a pawn, no other pawn should be selected at the same time.
             if(!board.existNodeSelected()) {
 
                 if (selectByUser) {
-                    if (colorNode.equals(Color.WHITE))
+                    if (colorNode.equals(COLOR_USER))
                         this.isNodeSelected = true;
                 } else {
-                    if (colorNode.equals(Color.BLACK))
+                    if (colorNode.equals(COLOR_CPU))
                         this.isNodeSelected = true;
                 }
             }
@@ -194,8 +202,8 @@ public class Node extends Circle {
 
                     // We get the color of the initial node.
                     int colorCode = 2;
-                    if(nodeBeginningMovement.getFill().equals(Color.WHITE)) colorCode = 0;
-                    if(nodeBeginningMovement.getFill().equals(Color.BLACK)) colorCode = 1;
+                    if(nodeBeginningMovement.getFill().equals(COLOR_USER)) colorCode = 0;
+                    if(nodeBeginningMovement.getFill().equals(COLOR_CPU)) colorCode = 1;
 
                     // Indicates that the initial node will now be empty.
                     nodeBeginningMovement.setContainsPawn(false , 2);

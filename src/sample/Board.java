@@ -30,6 +30,30 @@ public class Board {
     }
 
     /**
+     * get the number of pawn of a player still on the board
+     * @param playerCategory
+     * @return
+     */
+    public int getNbPawnOnBoard(PlayerCategory playerCategory) {
+        int result = 0;
+        for(int i=0 ; i<9 ; i++) {
+            for(int j=0 ; j<5 ; j++) {
+                switch (playerCategory) {
+                    case USER:
+                        if(nodes[i][j].getFill().equals(Node.getColorUser()))
+                            result++;
+                        break;
+                    case COMPUTER:
+                        if(nodes[i][j].getFill().equals(Node.getColorCpu()))
+                            result++;
+                        break;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Instantiate all the nodes
       */
     private void createNodes() {

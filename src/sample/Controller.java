@@ -30,7 +30,7 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        // On redefinit la taille des lignes et colonnes
+        // define the rows and colums sizes
         ColumnConstraints columnConstraint = new ColumnConstraints(100);
         RowConstraints rowConstraints = new RowConstraints(100);
         for(int i=0 ; i<9 ; i++)
