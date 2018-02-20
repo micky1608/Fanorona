@@ -19,7 +19,7 @@ public abstract class Player {
 
     public abstract void selectNodeEnd();
 
-    private void endturn() {
+    protected void endTurn() {
         game.switchPlayerTurn();
     }
 }

@@ -9,6 +9,7 @@ public class Computer extends Player {
     @Override
     public void play() {
         //TODO
+        endTurn();
     }
 
     @Override

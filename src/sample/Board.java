@@ -23,10 +23,12 @@ public class Board {
         threadNode.setDaemon(true);
         threadNode.start();
 
-        displayNodes();
-
         this.nodesAspiration=new ArrayList<>();
         this.nodesPercussion=new ArrayList<>();
+    }
+
+    public void setTextInConsole(String text) {
+        controller.setTexte(text);
     }
 
     /**
@@ -148,16 +150,6 @@ public class Board {
             }
         }
         return null;
-    }
-
-    private void displayNodes() {
-        for(int i=0 ; i<9 ; i++) {
-            for (int j = 0; j < 5; j++) {
-                // Affichage dans la console
-                //System.out.println(nodes[i][j]);
-
-            }
-        }
     }
 
     /**

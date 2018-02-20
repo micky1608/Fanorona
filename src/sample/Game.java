@@ -74,17 +74,25 @@ public class Game extends Thread {
                     finishGame();
             }
 
-            while(playerTurn.equals(PlayerCategory.COMPUTER)) {
+            while(playerTurn.equals(PlayerCategory.COMPUTER) && !isGameOver()) {
                 computer.play();
                 if(isGameOver())
                     finishGame();
             }
         }
-        finishGame();
     }
 
     private void finishGame() {
-        //TODO
+        board.setTextInConsole("Game finished : " + (getPlayerWinner().equals(PlayerCategory.USER) ? "You win" : "You lose"));
+    }
+
+    private PlayerCategory getPlayerWinner() {
+        if(board.getNbPawnOnBoard(PlayerCategory.USER) == 0)
+            return PlayerCategory.COMPUTER;
+        else if(board.getNbPawnOnBoard(PlayerCategory.COMPUTER) == 0)
+            return PlayerCategory.USER;
+
+        return null;
     }
 
 
