@@ -5,6 +5,10 @@ public abstract class Player {
     // the gale the player is playing
     protected Game game;
 
+    protected Node nodeSelectedBeginning;
+
+    protected Node nodeSelectedEnd;
+
     /**
      * Constructor
      * @param game
@@ -13,11 +17,15 @@ public abstract class Player {
         this.game = game;
     }
 
-    public abstract void play();
+    public void play() throws InterruptedException {
+        selectNodeBeginning();
+        selectNodeEnd();
+        endTurn();
+    }
 
-    public abstract void selectNodeBeginning();
+    public abstract void selectNodeBeginning() throws InterruptedException;
 
-    public abstract void selectNodeEnd();
+    public abstract void selectNodeEnd() throws InterruptedException;
 
     protected void endTurn() {
         game.switchPlayerTurn();

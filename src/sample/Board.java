@@ -11,17 +11,17 @@ public class Board {
     private ArrayList<Node> nodesPercussion;
     private ArrayList<Node> nodesAspiration;
 
+    // the game this board is related to
+    private Game game;
+
     private static Controller controller = null;
 
 
-    public Board() {
+    public Board(Game game) {
+        this.game = game;
         this.nodes = new Node[9][5];
         controller = Main.getController();
         createNodes();
-
-        ThreadNode threadNode = new ThreadNode();
-        threadNode.setDaemon(true);
-        threadNode.start();
 
         this.nodesAspiration=new ArrayList<>();
         this.nodesPercussion=new ArrayList<>();
@@ -29,6 +29,10 @@ public class Board {
 
     public void setTextInConsole(String text) {
         controller.setTexte(text);
+    }
+
+    public Game getGame() {
+        return game;
     }
 
     /**
@@ -137,6 +141,23 @@ public class Board {
         return result;
     }
 
+
+    /**
+     * Get the node destination selected
+     * @return
+     */
+    public Node getNodeDestinationSelected() {
+        for(int i=0 ; i<9 ; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (nodes[i][j].isDestinationNodeSelected()) {
+                    nodes[i][j].setDestinationNodeSelected(false);
+                   return nodes[i][j];
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * @return the node which is selected, if there's one.
      */
@@ -150,30 +171,6 @@ public class Board {
             }
         }
         return null;
-    }
-
-    /**
-     * Thread which will adjust the node' size in case they are selected, or if they are in position of percussion or aspiration.
-     */
-    private class ThreadNode extends Thread {
-
-        @Override
-        public void run() {
-            while(true) {
-                for(int i=0 ; i<9 ; i++) {
-                    for(int j=0 ; j<5 ; j++) {
-                        if(nodes[i][j].isContainsPawn()) {
-
-                            if((nodes[i][j].isNodeSelected() || nodes[i][j].getPercutable() || nodes[i][j].getAspirable()) && nodes[i][j].getRadius() != Node.getRadiusNodePawnnSelected())
-                                nodes[i][j].setRadius(Node.getRadiusNodePawnnSelected());
-
-                            else if(!(nodes[i][j].isNodeSelected() || nodes[i][j].getPercutable() || nodes[i][j].getAspirable()) && nodes[i][j].getRadius() != Node.getRadiusNodePawn())
-                                nodes[i][j].setRadius(Node.getRadiusNodePawn());
-                        }
-                    }
-                }
-            }
-        }
     }
 
     /**

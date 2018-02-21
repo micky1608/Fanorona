@@ -7,13 +7,8 @@ public class Computer extends Player {
     }
 
     @Override
-    public void play() {
-        //TODO
-        endTurn();
-    }
-
-    @Override
     public void selectNodeBeginning() {
+        game.setTextInConsole("Computer PLAY");
         //TODO
     }
 

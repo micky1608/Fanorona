@@ -23,6 +23,7 @@ public class Main extends Application {
         this.controller = loader.getController();
         primaryStage.setTitle("Fanorona");
         primaryStage.getIcons().add(new Image("/images/icone.png"));
+        primaryStage.setResizable(false);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
 

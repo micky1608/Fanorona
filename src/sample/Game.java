@@ -12,7 +12,6 @@ public class Game extends Thread {
     private int nbUserPawnBeginTurn;
 
 
-
     @Override
     public void run() {
         try {
@@ -20,11 +19,15 @@ public class Game extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        this.board = new Board();
+        this.board = new Board(this);
         this.computer = new Computer(this);
         this.user = new User(this);
         this.playerTurn = PlayerCategory.USER;
-        startGame();
+        try {
+            startGame();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -66,14 +69,17 @@ public class Game extends Thread {
         return false;
     }
 
-    private void startGame() {
+    private void startGame() throws InterruptedException {
         while (!isGameOver()) {
+
+            // user plays as much times as the rules allow
             while(playerTurn.equals(PlayerCategory.USER)) {
                 user.play();
                 if(isGameOver())
                     finishGame();
             }
 
+            // computer plays as much times as the rules allow
             while(playerTurn.equals(PlayerCategory.COMPUTER) && !isGameOver()) {
                 computer.play();
                 if(isGameOver())
@@ -86,6 +92,10 @@ public class Game extends Thread {
         board.setTextInConsole("Game finished : " + (getPlayerWinner().equals(PlayerCategory.USER) ? "You win" : "You lose"));
     }
 
+    /**
+     * Get the winner of the game
+     * @return
+     */
     private PlayerCategory getPlayerWinner() {
         if(board.getNbPawnOnBoard(PlayerCategory.USER) == 0)
             return PlayerCategory.COMPUTER;
@@ -95,5 +105,20 @@ public class Game extends Thread {
         return null;
     }
 
+    public void setTextInConsole (String text) {
+        board.setTextInConsole(text);
+    }
+
+    public boolean existNodeSelected() {
+        return board.existNodeSelected();
+    }
+
+    public Node getNodeSelected() {
+        return board.getNodeSelected();
+    }
+
+    public Node getDestinationNodeSelected() {
+        return board.getNodeDestinationSelected();
+    }
 
 }

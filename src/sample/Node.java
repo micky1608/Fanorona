@@ -12,6 +12,9 @@ public class Node extends Circle {
     private boolean isAspirable;
     private boolean isPercutable;
 
+    // boolean which will become true when an empty node is selected to perform a movement
+    private boolean destinationNodeSelected;
+
     // A node is even when having 8 neighbours (or 3 when is in a corner)
     private boolean isEven;
 
@@ -52,6 +55,7 @@ public class Node extends Circle {
         this.posY = y;
         this.board = board;
         this.isNodeSelected = false;
+        this.destinationNodeSelected = false;
 
         if((x+y)%2==0){this.isEven = true; }
         else{this.isEven = false; }
@@ -115,10 +119,14 @@ public class Node extends Circle {
 
     public void setPercutable(boolean val){
         this.isPercutable=val;
+        if (val) setRadius(RADIUS_NODE_PAWN_SELECTED);
+        else if (!val) setRadius((containsPawn) ? RADIUS_NODE_PAWN : RADIUS_NODE_EMPTY);
     }
 
     public void setAspirable(boolean val){
         this.isAspirable=val;
+        if (val) setRadius(RADIUS_NODE_PAWN_SELECTED);
+        else if (!val) setRadius((containsPawn) ? RADIUS_NODE_PAWN : RADIUS_NODE_EMPTY);
     }
 
     public boolean getAspirable(){
@@ -127,6 +135,12 @@ public class Node extends Circle {
 
     public boolean getPercutable(){
         return isPercutable;
+    }
+
+    public boolean isDestinationNodeSelected() {return this.destinationNodeSelected; }
+
+    public void setDestinationNodeSelected(boolean destinationNodeSelected) {
+        this.destinationNodeSelected = destinationNodeSelected;
     }
 
     /**
@@ -182,9 +196,22 @@ public class Node extends Circle {
             if(!board.existNodeSelected()) {
 
                 if (selectByUser) {
-                    if (colorNode.equals(COLOR_USER))
+                    if (colorNode.equals(COLOR_USER)) {
+
+                        // user clicked on one of his pawns so we select that
                         this.isNodeSelected = true;
+
+                        // update the radius of the pawn
+                        setRadius(RADIUS_NODE_PAWN_SELECTED);
+
+                        // wake the game thread which is waiting for the user choice
+                        synchronized (board.getGame()) {
+                            board.getGame().notify();
+                        }
+                    }
+
                 } else {
+                    // this pawn is selected by the computer
                     if (colorNode.equals(COLOR_CPU))
                         this.isNodeSelected = true;
                 }
@@ -214,14 +241,30 @@ public class Node extends Circle {
                     // The new node contains now a pawn, with the same color.
                     this.setContainsPawn(true , colorCode);
 
+                    // inform that this node is the chosen destination node
+                    this.destinationNodeSelected = true;
+
+                    // do the necessary exclusions after this movement
                     this.board.choosePawnsToExclude(nodeBeginningMovement, this);
+
+                    // wake the game thread which is waiting for the user click
+                    if(selectByUser) {
+                        synchronized (board.getGame()) {
+                            board.getGame().notify();
+                        }
+                    }
                 }
             }
         }
     }
 
+    /**
+     * If the node contains a pawn AND this pawn is selected, then it is deselected
+     */
     public void deselect() {
         this.isNodeSelected = false;
+        if(containsPawn) setRadius(RADIUS_NODE_PAWN);
+        else if(!containsPawn) setRadius(RADIUS_NODE_EMPTY);
     }
 
     public void exclude(int choice){
