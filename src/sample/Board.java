@@ -174,6 +174,17 @@ public class Board {
     }
 
     /**
+     * set the disable property for all the nodes
+     * @param choice
+     */
+    public void setDisableAllNodes (boolean choice) {
+        for(int i=0 ; i<9 ; i++) {
+            for(int j=0 ; j<4 ; j++)
+                nodes[i][j].setDisable(choice);
+        }
+    }
+
+    /**
      * The method will find which pawns can be excluded of the game, and then exclude them by calling excludePawn().
      * This is called after a pawn is moved to check the possible captures
      * @param nodeBeginning

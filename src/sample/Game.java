@@ -72,12 +72,18 @@ public class Game extends Thread {
     private void startGame() throws InterruptedException {
         while (!isGameOver()) {
 
+            //enable the clicks on the nodes
+            board.setDisableAllNodes(false);
+
             // user plays as much times as the rules allow
             while(playerTurn.equals(PlayerCategory.USER)) {
                 user.play();
                 if(isGameOver())
                     finishGame();
             }
+
+            // disable the clicks by the user
+            board.setDisableAllNodes(true);
 
             // computer plays as much times as the rules allow
             while(playerTurn.equals(PlayerCategory.COMPUTER) && !isGameOver()) {

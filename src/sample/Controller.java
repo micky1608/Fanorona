@@ -6,6 +6,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -14,6 +15,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
+
+    @FXML
+    private AnchorPane anchorPane;
 
     @FXML
     private GridPane gridPane;
@@ -38,8 +42,13 @@ public class Controller implements Initializable {
         for(int i=0 ; i<5 ; i++)
             gridPane.getRowConstraints().add(rowConstraints);
 
+
         gridPane.setStyle("-fx-background-image : url('images/plateau.jpg')");
-        console.setDisable(true);
+
+        anchorPane.setStyle("-fx-background-image : url('images/background_textarea.jpg')");
+        console.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
+
+        console.setEditable(false);
     }
 
     /**
@@ -61,6 +70,10 @@ public class Controller implements Initializable {
      * @Param texte
      */
     public void setTexte (String texte){
+
+        System.out.println(texte);
+
         console.setText(console.getText()+"\n"+texte);
+        console.setScrollTop(Double.MAX_VALUE);
     }
 }
