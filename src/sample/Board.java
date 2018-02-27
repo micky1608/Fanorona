@@ -16,12 +16,19 @@ public class Board {
 
     private static Controller controller = null;
 
-
     public Board(Game game) {
         this.game = game;
         this.nodes = new Node[9][5];
         controller = Main.getController();
-        createNodes();
+        createNodes(true);
+
+        this.nodesAspiration=new ArrayList<>();
+        this.nodesPercussion=new ArrayList<>();
+    }
+
+    public Board(){
+        this.nodes=new Node[9][5];
+        createNodes(false);
 
         this.nodesAspiration=new ArrayList<>();
         this.nodesPercussion=new ArrayList<>();
@@ -33,6 +40,10 @@ public class Board {
 
     public Game getGame() {
         return game;
+    }
+
+    public Node[][] getNodes(){
+        return nodes;
     }
 
     /**
@@ -60,9 +71,10 @@ public class Board {
     }
 
     /**
-     * Instantiate all the nodes
-      */
-    private void createNodes() {
+     * Instantiate all the nodes. Only add the node to the controller if it's not a board use in the search tree.
+     * @param needToShow
+     */
+    private void createNodes(boolean needToShow) {
         for(int i=0 ; i<9 ; i++) {
             for(int j=0 ; j<5 ; j++) {
                 nodes[i][j] = new Node(i,j , this);
@@ -85,7 +97,9 @@ public class Board {
                         nodes[i][j].setContainsPawn(true , 0);
                         break;
                 }
-                controller.addNoeud(nodes[i][j] , i , j);
+                if(needToShow) {
+                    controller.addNoeud(nodes[i][j], i, j);
+                }
             }
         }
     }

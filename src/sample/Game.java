@@ -127,4 +127,8 @@ public class Game extends Thread {
         return board.getNodeDestinationSelected();
     }
 
+    public Board getBoard(){
+        return board;
+    }
+
 }
