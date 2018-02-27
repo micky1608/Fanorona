@@ -12,7 +12,7 @@ public class Computer extends Player {
         root = new TreeNode();
         root.createSons();
 
-        /*
+
         System.out.println(root.toString());
         for(TreeNode tn:root.getSons()){
             System.out.println(tn.toString()+"\n");
@@ -22,7 +22,7 @@ public class Computer extends Player {
             }
 
         }
-        */
+
 
         //TODO
     }

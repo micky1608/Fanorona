@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.scene.paint.Color;
+
 public class Game extends Thread {
 
     private Board board;
@@ -72,7 +74,34 @@ public class Game extends Thread {
      * @return
      */
     public boolean existCapture (Node nodeBeginning) {
-        //TODO
+        // get the opponent color to check if the capture is posible when a neighbour is found
+        Color opponentColor = (nodeBeginning.getFill().equals(Node.getColorUser()) ? Node.getColorCpu() : Node.getColorUser());
+
+        // get the position od the beginning node
+        int actualX = nodeBeginning.getX();
+        int actualY = nodeBeginning.getY();
+
+        // search among the neighbours
+        for(int i=-1 ; i<=1 ; i++) {
+            for(int j=-1 ; j<=1 ; j++) {
+
+                // check if this is a correct neighbour
+                // if the node id odd, add the condition i==0 || j==0
+                if ((actualX + i) < 9 && (actualX + i) >= 0 && (actualY + j) < 5 && (actualY + j) >= 0 && !(i == 0 && j == 0) && (nodeBeginning.isEven() ? true : (i == 0 || j == 0))) {
+
+                    Node potentialDestination = board.getNodes()[actualX + i][actualY + j];
+
+                    // check if this an empty node we can move to
+                    if (potentialDestination.getFill().equals(Node.getColorEmpty())) {
+                        //TODO
+                        // check if move to this potential destination allow capture some opponent's pawns
+                    }
+
+
+                }
+            }
+        }
+
         return false;
     }
 

@@ -30,6 +30,8 @@ public class User extends Player {
         // get the node just selected
         // MAYBE not necessary
         this.nodeSelectedBeginning = game.getNodeSelected();
+
+        System.out.println("Exist capture : " + game.existCapture(nodeSelectedBeginning));
     }
 
     @Override

@@ -119,6 +119,10 @@ public class Node extends Circle {
         return COLOR_CPU;
     }
 
+    public static  Color getColorEmpty() {
+        return COLOR_EMPTY;
+    }
+
     public void setPercutable(boolean val){
         this.isPercutable=val;
         if (val) setRadius(RADIUS_NODE_PAWN_SELECTED);

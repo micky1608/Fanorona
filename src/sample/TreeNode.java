@@ -95,7 +95,7 @@ public class TreeNode {
 
                         // check if this is a correct neighbour
                         // if the node is odd : add the condition either i or j = 0
-                        if ((actualX + i) < 9 && (actualY + i) >= 0 && (actualY + j) < 5 && (actualY + j) >= 0 && !(i == 0 && j == 0) && (emptyNode.isEven() ? true : (i == 0 || j == 0))) {
+                        if ((actualX + i) < 9 && (actualX + i) >= 0 && (actualY + j) < 5 && (actualY + j) >= 0 && !(i == 0 && j == 0) && (emptyNode.isEven() ? true : (i == 0 || j == 0))) {
 
                             //Color depends on the deepness, as the player plays once every two moves.
                             if (nodes[actualX + i][actualY + j].getFill().equals(deepness % 2 == 0 ? COLOR_USER : COLOR_CPU))
