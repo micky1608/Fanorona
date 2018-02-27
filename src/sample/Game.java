@@ -23,6 +23,8 @@ public class Game extends Thread {
         this.computer = new Computer(this);
         this.user = new User(this);
         this.playerTurn = PlayerCategory.USER;
+        this.nbComputerPawnBeginTurn = 0;
+        this.nbUserPawnBeginTurn = 0;
         try {
             startGame();
         } catch (InterruptedException e) {
@@ -51,11 +53,16 @@ public class Game extends Thread {
     }
 
     /**
-     * tell if the player captured pawn during his last mouvment
+     * tell if the player captured pawn during his last movement
      * @return
      */
     public boolean capturePawn(PlayerCategory playerCategory) {
-        //TODO
+        switch (playerCategory) {
+            case USER:
+                return board.getNbPawnOnBoard(PlayerCategory.COMPUTER) < nbComputerPawnBeginTurn;
+            case COMPUTER:
+                return board.getNbPawnOnBoard(PlayerCategory.USER) < nbUserPawnBeginTurn;
+        }
         return false;
     }
 
@@ -77,7 +84,10 @@ public class Game extends Thread {
 
             // user plays as much times as the rules allow
             while(playerTurn.equals(PlayerCategory.USER)) {
+                this.nbUserPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.USER);
+                this.nbComputerPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.COMPUTER);
                 user.play();
+                System.out.println("User captured pawns : " + capturePawn(PlayerCategory.USER));
                 if(isGameOver())
                     finishGame();
             }
@@ -87,6 +97,8 @@ public class Game extends Thread {
 
             // computer plays as much times as the rules allow
             while(playerTurn.equals(PlayerCategory.COMPUTER) && !isGameOver()) {
+                this.nbUserPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.USER);
+                this.nbComputerPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.COMPUTER);
                 computer.play();
                 if(isGameOver())
                     finishGame();

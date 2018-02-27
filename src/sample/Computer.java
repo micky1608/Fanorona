@@ -5,8 +5,14 @@ public class Computer extends Player {
 
     public Computer(Game game) {
         super(game);
-        root=new TreeNode();
+        createTreeSearch(1);
+    }
+
+    private void createTreeSearch(int deepness) {
+        root = new TreeNode();
         root.createSons();
+
+        /*
         System.out.println(root.toString());
         for(TreeNode tn:root.getSons()){
             System.out.println(tn.toString()+"\n");
@@ -16,6 +22,9 @@ public class Computer extends Player {
             }
 
         }
+        */
+
+        //TODO
     }
 
     @Override
