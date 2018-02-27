@@ -101,6 +101,8 @@ public class Node extends Circle {
         return this.containsPawn;
     }
 
+    public boolean isEven() { return isEven; }
+
     public static double getRadiusNodePawn() {
         return RADIUS_NODE_PAWN;
     }
