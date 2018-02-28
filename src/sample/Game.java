@@ -81,7 +81,7 @@ public class Game extends Thread {
         int actualX = nodeBeginning.getX();
         int actualY = nodeBeginning.getY();
 
-        // search among the neighbours
+        // search among the neighbours if exist an empty node to use as a destination
         for(int i=-1 ; i<=1 ; i++) {
             for(int j=-1 ; j<=1 ; j++) {
 
@@ -93,11 +93,19 @@ public class Game extends Thread {
 
                     // check if this an empty node we can move to
                     if (potentialDestination.getFill().equals(Node.getColorEmpty())) {
-                        //TODO
                         // check if move to this potential destination allow capture some opponent's pawns
+
+                        // check if capture by percussion is possible
+                        Node testPercussionNode = board.getNodes()[potentialDestination.getX() + i][potentialDestination.getY() + j];
+                        if (testPercussionNode.getFill().equals(opponentColor))
+                                return true;
+
+                        // check if capture by aspiration is possible
+                        Node testAspirationNode = board.getNodes()[nodeBeginning.getX() - i][nodeBeginning.getY() - j];
+                        if (testAspirationNode.getFill().equals(opponentColor))
+                            return true;
+
                     }
-
-
                 }
             }
         }
