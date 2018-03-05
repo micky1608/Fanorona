@@ -283,13 +283,15 @@ public class Node extends Circle {
      * @return
      */
     private boolean isNeighborOf(Node otherNode) {
-        int posX_other = otherNode.getX();
-        int posY_other = otherNode.getY();
 
         //A node can't be neighbor of himself.
         if(otherNode == this){
             return false;
         }
+
+        int posX_other = otherNode.getX();
+        int posY_other = otherNode.getY();
+
         //An even node can have diagonal neighbors, while an odd node can't.
         if(isEven) {
             if (posX_other == posX || posX_other == posX - 1 || posX_other == posX + 1)

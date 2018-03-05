@@ -297,4 +297,28 @@ public class Board {
         nodesPercussion.clear();
         nodesAspiration.clear();
     }
+
+    /**
+     * Return true if the node can move and false otherwise
+     * @return
+     */
+    public boolean canMove (Node node) {
+        int posX = node.getX();
+        int posY = node.getY();
+
+        // search through the neighbors if there is an empty node
+        for(int i=-1 ; i<=1 ; i++) {
+            for(int j=-1 ; j<=1 ; j++) {
+
+                // check if this is a correct neighbor
+                if( posX + i >= 0 && posX + i < 9 && posY + j >= 0 && posY + j < 5 && !(i==0 && j==0) && (node.isEven() ? true : (i==0 || j==0)) ) {
+
+                    // look if this an empty node
+                    if(nodes[posX + i][posY + j].getFill().equals(Node.getColorEmpty()))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
 }
