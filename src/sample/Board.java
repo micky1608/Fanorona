@@ -44,14 +44,6 @@ public class Board implements Cloneable {
         this.nodesPercussion=new ArrayList<>();
     }
 
-    public Board (Node[][] nodes) {
-        this.nodes=nodes;
-
-        this.game = null;
-        this.nodesAspiration=new ArrayList<>();
-        this.nodesPercussion=new ArrayList<>();
-    }
-
     /**
      * Getters and setters
      * @param text
@@ -68,6 +60,24 @@ public class Board implements Cloneable {
 
     public Node[][] getNodes(){
         return nodes;
+    }
+
+    public void setNodes(Node[][] nodes) {
+        this.nodes = nodes;
+    }
+
+    @Override
+    public Board clone() {
+        Board cloneBoard = new Board();
+        Node[][] nodesClone = new Node[9][5];
+
+        for(int i=0 ; i<9 ; i++) {
+            for(int j=0 ; j<5 ; j++) {
+                nodesClone[i][j] = nodes[i][j].clone(cloneBoard);
+            }
+        }
+        cloneBoard.setNodes(nodesClone);
+        return cloneBoard;
     }
 
     /**
@@ -388,7 +398,7 @@ public class Board implements Cloneable {
         choosePawnsToExclude(nodeBeginning , destination);
     }
 
-    
+
     @Override
     public String toString() {
         StringBuffer sb=new StringBuffer("");

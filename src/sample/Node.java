@@ -104,14 +104,6 @@ public class Node extends Circle {
 
     public boolean isEven() { return isEven; }
 
-    public static double getRadiusNodePawn() {
-        return RADIUS_NODE_PAWN;
-    }
-
-    public static double getRadiusNodePawnnSelected() {
-        return RADIUS_NODE_PAWN_SELECTED;
-    }
-
     public static Color getColorUser() {
         return COLOR_USER;
     }
@@ -150,6 +142,29 @@ public class Node extends Circle {
         this.destinationNodeSelected = destinationNodeSelected;
     }
 
+    public void setNodeSelected(boolean nodeSelected) {
+        isNodeSelected = nodeSelected;
+    }
+
+    public void setEven(boolean even) {
+        isEven = even;
+    }
+
+    /**
+     * Get an other Node with the same properties
+     * we can specify the board it is related to
+     * @param board
+     * @return
+     */
+    public Node clone(Board board) {
+        Node cloneNode = new Node(posX, posY, board);
+        cloneNode.setContainsPawn(this.containsPawn , this.containsPawn ? (getFill().equals(COLOR_USER) ? 0 : 1) : 2);
+        cloneNode.setNodeSelected(this.isNodeSelected);
+        cloneNode.setAspirable(this.isAspirable);
+        cloneNode.setPercutable(this.isPercutable);
+        cloneNode.setEven(this.isEven);
+        return cloneNode;
+    }
 
     /**
      * Updates the boolean which indicates if the node contains a pawn or not, and updates he size and color.

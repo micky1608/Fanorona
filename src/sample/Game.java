@@ -27,7 +27,7 @@ public class Game extends Thread {
         this.playerTurn = PlayerCategory.USER;
         this.nbComputerPawnBeginTurn = 0;
         this.nbUserPawnBeginTurn = 0;
-        new GameSimulator(new Board(board.getNodes().clone()) , PlayerCategory.USER).simulate();
+        new GameSimulator(board.clone() , PlayerCategory.USER).simulate();
         try {
             startGame();
         } catch (InterruptedException e) {
