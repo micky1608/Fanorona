@@ -1,8 +1,12 @@
 package sample;
 
-import java.util.ArrayList;
 
-public class Board {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
+public class Board implements Cloneable {
 
     // The matrice that contains all the nodes.
     private Node[][] nodes;
@@ -15,6 +19,11 @@ public class Board {
     private Game game;
 
     private static Controller controller = null;
+
+    /**
+     * Constructors
+     * @param game
+     */
 
     public Board(Game game) {
         this.game = game;
@@ -30,9 +39,24 @@ public class Board {
         this.nodes=new Node[9][5];
         createNodes(false);
 
+        this.game = null;
         this.nodesAspiration=new ArrayList<>();
         this.nodesPercussion=new ArrayList<>();
     }
+
+    public Board (Node[][] nodes) {
+        this.nodes=nodes;
+
+        this.game = null;
+        this.nodesAspiration=new ArrayList<>();
+        this.nodesPercussion=new ArrayList<>();
+    }
+
+    /**
+     * Getters and setters
+     * @param text
+     */
+
 
     public void setTextInConsole(String text) {
         controller.setTexte(text);
@@ -321,4 +345,70 @@ public class Board {
         }
         return false;
     }
+
+    /**
+     * Make a random move from this node
+     * This method is called ONLY on an non empty node
+     * This method suppose that there is at least one empty node which is a neighbor
+     */
+    public void randomMove(Node nodeBeginning) {
+        int posX = nodeBeginning.getX();
+        int posY = nodeBeginning.getY();
+
+        // the list which will contains all the possible destinations
+        List<Node> destinations = new ArrayList<>();
+
+        // search through the neighbors the empty nodes
+        for(int i=-1 ; i<=1 ; i++) {
+            for (int j = -1; j <= 1; j++) {
+
+                // check if this is a correct neighbor
+                if (posX + i >= 0 && posX + i < 9 && posY + j >= 0 && posY + j < 5 && !(i == 0 && j == 0) && (nodeBeginning.isEven() ? true : (i == 0 || j == 0))) {
+
+                    // if the node is empty, it is added to the list
+                    if(nodes[posX + i][posY + j].getFill().equals(Node.getColorEmpty()))
+                        destinations.add(nodes[posX + i][posY + j]);
+                }
+            }
+        }
+
+        // generate a random number between 0 and the list size less 1
+        Random rand = new Random();
+        int indice = rand.nextInt(destinations.size());
+
+        // retrieve the destination node according to the random number
+        Node destination = destinations.get(indice);
+
+        // now we can make the move
+        destination.setContainsPawn(true , nodeBeginning.getFill().equals(Node.getColorUser()) ? 0 : 1);
+        nodeBeginning.setContainsPawn(false , 2);
+
+
+        // exclude the pawns if necessary
+        choosePawnsToExclude(nodeBeginning , destination);
+    }
+
+    
+    @Override
+    public String toString() {
+        StringBuffer sb=new StringBuffer("");
+
+        for(int j=0;j<5;j++){
+            for(int i=0;i<9;i++){
+                if(nodes[i][j].getFill().equals(Node.getColorUser())){
+                    sb.append("+");
+                }
+                if(nodes[i][j].getFill().equals(Node.getColorCpu())){
+                    sb.append("-");
+                }
+                if(nodes[i][j].getFill().equals(Node.getColorEmpty())){
+                    sb.append("0");
+                }
+            }
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
 }

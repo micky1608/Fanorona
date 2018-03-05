@@ -154,27 +154,15 @@ public class TreeNode {
      * -Deepness
      */
     public String toString() {
-        StringBuffer sb=new StringBuffer();
-        if(father==null){
+        StringBuffer sb = new StringBuffer("");
+
+        if(father==null)
             sb.append("I'm root\n");
-        }
-        else{
+        else
             sb.append("I'm not root\n");
-        }
-        for(int j=0;j<5;j++){
-            for(int i=0;i<9;i++){
-                if(nodes[i][j].getFill().equals(COLOR_USER)){
-                    sb.append("+");
-                }
-                if(nodes[i][j].getFill().equals(COLOR_CPU)){
-                    sb.append("-");
-                }
-                if(nodes[i][j].getFill().equals(Color.GREY)){
-                    sb.append("0");
-                }
-            }
-            sb.append("\n");
-        }
+
+        sb.append(board.toString());
+
         sb.append("Evaluation:"+evaluation+"\t Deepness:"+deepness);
 
         return sb.toString();

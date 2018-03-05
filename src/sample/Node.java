@@ -4,7 +4,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 
-
 public class Node extends Circle {
 
     private boolean containsPawn;
@@ -81,6 +80,8 @@ public class Node extends Circle {
 
         }
 
+
+
     /**
      * GETTERS ANS SETTERS
      */
@@ -148,6 +149,7 @@ public class Node extends Circle {
     public void setDestinationNodeSelected(boolean destinationNodeSelected) {
         this.destinationNodeSelected = destinationNodeSelected;
     }
+
 
     /**
      * Updates the boolean which indicates if the node contains a pawn or not, and updates he size and color.

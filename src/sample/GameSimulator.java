@@ -1,9 +1,11 @@
 package sample;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GameSimulator {
 
@@ -21,9 +23,10 @@ public class GameSimulator {
      * Constructor
      * @param board
      */
-    public GameSimulator(Board board) {
+    public GameSimulator(Board board , PlayerCategory fisrtToPlay) {
         this.board = board;
-        colorPawnToPlay = Node.getColorCpu();
+        colorPawnToPlay = (fisrtToPlay.equals(PlayerCategory.USER) ? Node.getColorUser() : Node.getColorCpu());
+        System.out.println("New Game Simulator starting with " + fisrtToPlay + "\n" + board);
     }
 
     /**
@@ -33,17 +36,32 @@ public class GameSimulator {
      * @return 0 if the user win
      * @return 1 if the computer win
      */
-    public int simule () {
+    public int simulate () {
         while(!isGameOver()) {
-            simuleOneMove();
+            System.out.println("Simulate One Move\n" + board);
+            simulateOneMove();
             switchColorPawnToPlay();
         }
 
+        System.out.println("END simulation\n" + board);
         return (getPlayerWinner().equals(PlayerCategory.USER) ? 0 : 1);
     }
 
-    private void simuleOneMove() {
-        //TODO
+    private void simulateOneMove() {
+
+        // get a list which contains all tha pawns that can move this turn
+        List<Node> nodesToMove = getPawnsToMove();
+
+        // generate a random number between 0 and the list size less 1
+        Random rand = new Random();
+        int indice = rand.nextInt(nodesToMove.size());
+
+        // get the random node that is selected to move
+        Node nodeBeginning = nodesToMove.get(indice);
+
+        // make this node move randomly
+        board.randomMove(nodeBeginning);
+
     }
 
     /**
