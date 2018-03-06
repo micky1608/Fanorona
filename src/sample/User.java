@@ -2,12 +2,20 @@ package sample;
 
 public class User extends Player {
 
+    // boolean to know when a pawn was deselected to cancel the turn and restart it
+    private boolean pawnDeselected;
+
     /**
      * Constructor
      * @param game
      */
     public User(Game game) {
         super(game);
+        this.pawnDeselected = false;
+    }
+
+    public void setPawnDeselected(boolean pawnDeselected) {
+        this.pawnDeselected = pawnDeselected;
     }
 
     @Override
@@ -56,11 +64,26 @@ public class User extends Player {
             game.wait();
         }
 
-        // when arriving here, a correct destination was chosen
-        game.setTextInConsole("Movement done");
+        if(!pawnDeselected) {
+            // when arriving here, a correct destination was chosen
+            game.setTextInConsole("Movement done");
 
-        // get this destination node
-        // MAYBE not necessary
-        this.nodeSelectedEnd = game.getDestinationNodeSelected();
+            // get this destination node
+            // MAYBE not necessary
+            this.nodeSelectedEnd = game.getDestinationNodeSelected();
+        }
+        else {
+            game.setTextInConsole("Pawn deselected : start the turn again");
+        }
+
+    }
+
+    @Override
+    protected void endTurn() {
+        if(!pawnDeselected) {
+            super.endTurn();
+        }
+
+        this.pawnDeselected = false;
     }
 }

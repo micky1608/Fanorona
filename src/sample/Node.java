@@ -72,13 +72,35 @@ public class Node extends Circle {
 
                 // The button is clicked to be selected or deselected
                 // We can do this action only when all the nodes are not percutables nor aspirables
-                if(!this.isNodeSelected()&&!this.board.existNodeAspirable()&&!this.board.existNodePercutable())
-                    this.select(true);
-                else
-                    this.deselect();
+                if(!this.isNodeSelected()&&!this.board.existNodeAspirable()&&!this.board.existNodePercutable()) {
+                    try {
+                        this.select(true);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    try {
+                        this.deselect();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    // mention that the node is deselected deliberately by the user
+                    board.getGame().setUserPawnDeselected(true);
+
+                    // we notify the thread game to make it stop waiting for a destination node
+                    // the user turn will end without switching the player turn
+                    // so the user will play again
+                    if(board.getGame().getState().equals(Thread.State.WAITING)) {
+                        synchronized (board.getGame()) {
+                            board.getGame().notify();
+                        }
+                    }
+                }
         });
 
-        }
+    }
 
 
 
@@ -210,7 +232,7 @@ public class Node extends Circle {
      *                     true : player -> can only select white pawns.
      *                     false : CPU -> can only select black pawns.
      */
-    public void select (boolean selectByUser) {
+    public void select (boolean selectByUser) throws InterruptedException {
         Paint colorNode = this.getFill();
 
         if(colorNode.equals(COLOR_USER) || colorNode.equals(COLOR_CPU)) {
@@ -284,10 +306,11 @@ public class Node extends Circle {
     /**
      * If the node contains a pawn AND this pawn is selected, then it is deselected
      */
-    public void deselect() {
+    public void deselect() throws InterruptedException {
         this.isNodeSelected = false;
         if(containsPawn) setRadius(RADIUS_NODE_PAWN);
         else if(!containsPawn) setRadius(RADIUS_NODE_EMPTY);
+
     }
 
     public void exclude(int choice){

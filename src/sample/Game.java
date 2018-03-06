@@ -1,7 +1,5 @@
 package sample;
 
-import javafx.scene.paint.Color;
-
 public class Game extends Thread {
 
     private Board board;
@@ -120,10 +118,6 @@ public class Game extends Thread {
         board.setTextInConsole(text);
     }
 
-    public boolean existNodeSelected() {
-        return board.existNodeSelected();
-    }
-
     public Node getNodeSelected() {
         return board.getNodeSelected();
     }
@@ -132,8 +126,11 @@ public class Game extends Thread {
         return board.getNodeDestinationSelected();
     }
 
-    public Board getBoard(){
+    public Board getBoard() {
         return board;
     }
 
+    public void setUserPawnDeselected(boolean pawnDeselected) {
+        ((User)user).setPawnDeselected(pawnDeselected);
+    }
 }
