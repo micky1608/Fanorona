@@ -69,51 +69,6 @@ public class Game extends Thread {
         return false;
     }
 
-    /**
-     * tell if a node can capture pawn from his position
-     * @param nodeBeginning
-     * @return
-     */
-    public boolean existCapture (Node nodeBeginning) {
-        // get the opponent color to check if the capture is posible when a neighbour is found
-        Color opponentColor = (nodeBeginning.getFill().equals(Node.getColorUser()) ? Node.getColorCpu() : Node.getColorUser());
-
-        // get the position od the beginning node
-        int actualX = nodeBeginning.getX();
-        int actualY = nodeBeginning.getY();
-
-        // search among the neighbours if exist an empty node to use as a destination
-        for(int i=-1 ; i<=1 ; i++) {
-            for(int j=-1 ; j<=1 ; j++) {
-
-                // check if this is a correct neighbour
-                // if the node id odd, add the condition i==0 || j==0
-                if ((actualX + i) < 9 && (actualX + i) >= 0 && (actualY + j) < 5 && (actualY + j) >= 0 && !(i == 0 && j == 0) && (nodeBeginning.isEven() ? true : (i == 0 || j == 0))) {
-
-                    Node potentialDestination = board.getNodes()[actualX + i][actualY + j];
-
-                    // check if this an empty node we can move to
-                    if (potentialDestination.getFill().equals(Node.getColorEmpty())) {
-                        // check if move to this potential destination allow capture some opponent's pawns
-
-                        // check if capture by percussion is possible
-                        Node testPercussionNode = board.getNodes()[potentialDestination.getX() + i][potentialDestination.getY() + j];
-                        if (testPercussionNode.getFill().equals(opponentColor))
-                                return true;
-
-                        // check if capture by aspiration is possible
-                        Node testAspirationNode = board.getNodes()[nodeBeginning.getX() - i][nodeBeginning.getY() - j];
-                        if (testAspirationNode.getFill().equals(opponentColor))
-                            return true;
-
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
     private void startGame() throws InterruptedException {
         while (!isGameOver()) {
 

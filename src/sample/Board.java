@@ -1,6 +1,8 @@
 package sample;
 
 
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -357,8 +359,63 @@ public class Board implements Cloneable {
     }
 
     /**
+     * tell if a node can capture pawn from his position
+     * @param nodeBeginning
+     * @return
+     */
+    public List<Node> possibleCapture (Node nodeBeginning) {
+        // get the opponent color to check if the capture is posible when a neighbour is found
+        Color opponentColor = (nodeBeginning.getFill().equals(Node.getColorUser()) ? Node.getColorCpu() : Node.getColorUser());
+
+        ArrayList<Node> possibleNodes=new ArrayList<>();
+
+        // get the position of the beginning node
+        int actualX = nodeBeginning.getX();
+        int actualY = nodeBeginning.getY();
+
+        // search among the neighbours if exist an empty node to use as a destination
+        for(int i=-1 ; i<=1 ; i++) {
+            for(int j=-1 ; j<=1 ; j++) {
+
+                // check if this is a correct neighbour
+                // if the node id odd, add the condition i==0 || j==0
+                if ((actualX + i) < 9 && (actualX + i) >= 0 && (actualY + j) < 5 && (actualY + j) >= 0 && !(i == 0 && j == 0) && (nodeBeginning.isEven() ? true : (i == 0 || j == 0))) {
+
+                    Node potentialDestination = this.nodes[actualX + i][actualY + j];
+
+                    // check if the node is an empty node we can move to
+                    if (potentialDestination.getFill().equals(Node.getColorEmpty())) {
+
+                        // check if the move to the potential destiantion allows the capture of an opponent pawn.
+
+                        if((potentialDestination.getX()+i)>=0 && (potentialDestination.getX()+i)<9 && (potentialDestination.getY()+j)>=0 && (potentialDestination.getY())+j<5){
+                            Node testPercussionNode = this.nodes[potentialDestination.getX() + i][potentialDestination.getY() + j];
+
+                            // add the node to the list if the check is correct and if this node doesn't exist already in the list.
+                            if (testPercussionNode.getFill().equals(opponentColor)&&!possibleNodes.contains(potentialDestination))
+                                possibleNodes.add(potentialDestination);
+                        }
+
+                        // if the capture's check failed, check if capture by aspiration is possible
+                        if(nodeBeginning.getX()-i>=0 && nodeBeginning.getX()-i<9 && nodeBeginning.getY()-j>=0 && nodeBeginning.getY()-j<5) {
+                            Node testAspirationNode = this.nodes[nodeBeginning.getX() - i][nodeBeginning.getY() - j];
+
+                            // add the node to the list if the check is correct and if this node doesn't exist already in the list.
+                            if (testAspirationNode.getFill().equals(opponentColor) && !possibleNodes.contains(potentialDestination)) {
+                                possibleNodes.add(potentialDestination);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return possibleNodes;
+    }
+
+    /**
      * Make a random move from this node
-     * This method is called ONLY on an non empty node
+     * This method is called ONLY on a non empty node
      * This method suppose that there is at least one empty node which is a neighbor
      */
     public void randomMove(Node nodeBeginning) {
@@ -366,18 +423,26 @@ public class Board implements Cloneable {
         int posY = nodeBeginning.getY();
 
         // the list which will contains all the possible destinations
-        List<Node> destinations = new ArrayList<>();
+        List<Node> destinations=new ArrayList<>();
 
-        // search through the neighbors the empty nodes
-        for(int i=-1 ; i<=1 ; i++) {
-            for (int j = -1; j <= 1; j++) {
+        // if there are possible captures, we make the captures.
+        if(possibleCapture(nodeBeginning).size()>0){
+            destinations=possibleCapture(nodeBeginning);
+        }
 
-                // check if this is a correct neighbor
-                if (posX + i >= 0 && posX + i < 9 && posY + j >= 0 && posY + j < 5 && !(i == 0 && j == 0) && (nodeBeginning.isEven() ? true : (i == 0 || j == 0))) {
+        // otherwise, we make any move possible
+        else{
+            // search through the neighbors the empty nodes
+            for(int i=-1 ; i<=1 ; i++) {
+                for (int j = -1; j <= 1; j++) {
 
-                    // if the node is empty, it is added to the list
-                    if(nodes[posX + i][posY + j].getFill().equals(Node.getColorEmpty()))
-                        destinations.add(nodes[posX + i][posY + j]);
+                    // check if this is a correct neighbor
+                    if (posX + i >= 0 && posX + i < 9 && posY + j >= 0 && posY + j < 5 && !(i == 0 && j == 0) && (nodeBeginning.isEven() ? true : (i == 0 || j == 0))) {
+
+                        // if the node is empty, it is added to the list
+                        if(nodes[posX + i][posY + j].getFill().equals(Node.getColorEmpty()))
+                            destinations.add(nodes[posX + i][posY + j]);
+                    }
                 }
             }
         }

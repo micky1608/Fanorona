@@ -69,12 +69,16 @@ public class TreeNode {
     public void createSons(){
         // we will store in this list all the empty nodes of the game.
         ArrayList<Node> actualEmptyList = new ArrayList<>();
+        boolean possibleCapture=false;
 
         //Storing all the empty nodes of the game.
         for(int i=0;i<9;i++){
             for(int j=0;j<5;j++){
                 if(!nodes[i][j].isContainsPawn()){
                     actualEmptyList.add(nodes[i][j]);
+                }
+                else if(nodes[i][j].getFill().equals(deepness % 2 == 0 ? COLOR_USER : COLOR_CPU)&&!board.possibleCapture(nodes[i][j]).isEmpty()){
+                    possibleCapture=true;
                 }
             }
         }
@@ -97,9 +101,19 @@ public class TreeNode {
                         // if the node is odd : add the condition either i or j = 0
                         if ((actualX + i) < 9 && (actualX + i) >= 0 && (actualY + j) < 5 && (actualY + j) >= 0 && !(i == 0 && j == 0) && (emptyNode.isEven() ? true : (i == 0 || j == 0))) {
 
-                            //Color depends on the deepness, as the player plays once every two moves.
-                            if (nodes[actualX + i][actualY + j].getFill().equals(deepness % 2 == 0 ? COLOR_USER : COLOR_CPU))
-                                createOneSon(emptyNode, i, j);
+                            //If there is a possible capture, only creates sons where the move makes a capture.
+                            if(possibleCapture) {
+                                if (nodes[actualX + i][actualY + j].getFill().equals(deepness % 2 == 0 ? COLOR_USER : COLOR_CPU) && board.possibleCapture(nodes[actualX + i][actualY + j]).contains(emptyNode)) {
+                                    createOneSon(emptyNode, i, j);
+                                }
+                            }
+                            //If there arn't any possibility, creates every sons possible.
+                            else{
+                                if(nodes[actualX + i][actualY + j].getFill().equals(deepness % 2 == 0 ? COLOR_USER : COLOR_CPU)){
+                                    createOneSon(emptyNode, i, j);
+                                }
+
+                            }
                         }
                 }
             }

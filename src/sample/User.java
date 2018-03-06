@@ -31,7 +31,16 @@ public class User extends Player {
         // MAYBE not necessary
         this.nodeSelectedBeginning = game.getNodeSelected();
 
-        System.out.println("Exist capture : " + game.existCapture(nodeSelectedBeginning));
+        if (game.getBoard().possibleCapture(nodeSelectedBeginning).isEmpty()){
+            System.out.println("Can't capture with this pawn");
+        }
+        else{
+            System.out.print("Capture possible:");
+            for(Node n:game.getBoard().possibleCapture(nodeSelectedBeginning)){
+                System.out.print("["+n.getX()+","+n.getY()+"]");
+            }
+            System.out.println("");
+        }
     }
 
     @Override
