@@ -6,10 +6,13 @@ public class Computer extends Player {
     private TreeNode root;
     private GameSimulator gameSimulator;
 
+    private Boolean testing;
 
-    public Computer(Game game) {
+
+    public Computer(Game game, Boolean testing) {
         super(game);
         createTreeSearch();
+        this.testing=testing;
     }
 
     private void createTreeSearch() {
@@ -32,16 +35,16 @@ public class Computer extends Player {
             for(int i=0;i<(30);i++){
                 gameSimulator=new GameSimulator(game.getBoard().clone(), PlayerCategory.COMPUTER);
                 tn.setProbabilityToWin(gameSimulator.simulate());
-                maxProbabilityToWin=maxProbabilityToWin<tn.getProbabilityToWin()?tn.getProbabilityToWin():maxProbabilityToWin;
+                maxProbabilityToWin = maxProbabilityToWin < tn.getProbabilityToWin() ? tn.getProbabilityToWin() : maxProbabilityToWin;
             }
             System.out.println(tn.toString());
-            System.out.println("Max proba:"+maxProbabilityToWin);
         }
         for(TreeNode tn:sons){
             if(tn.getProbabilityToWin()==maxProbabilityToWin){
                 try {
                     game.getBoard().getNodes()[tn.getBeginNode().getX()][tn.getBeginNode().getY()].select(false);
                     game.getBoard().getNodes()[tn.getEndNode().getX()][tn.getEndNode().getY()].select(false);
+                    break;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

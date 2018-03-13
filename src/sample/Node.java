@@ -61,40 +61,41 @@ public class Node extends Circle {
 
         //The handler will be different considering the moment of the game.
         this.setOnMouseClicked((event) -> {
+                if(this.board.getGame().getPlayerTurn()==PlayerCategory.USER) {
 
-                // The button was clicked when choosing beetween percussion and aspiration
-                // Here we don't select a node to move
-                if(this.isPercutable)
-                    this.exclude(1);
-                if(this.isAspirable){
-                    this.exclude(0);
-                }
-
-                // The button is clicked to be selected or deselected
-                // We can do this action only when all the nodes are not percutables nor aspirables
-                if(!this.isNodeSelected()&&!this.board.existNodeAspirable()&&!this.board.existNodePercutable()) {
-                    try {
-                        this.select(true);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                else {
-                    try {
-                        this.deselect();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    // The button was clicked when choosing beetween percussion and aspiration
+                    // Here we don't select a node to move
+                    if (this.isPercutable)
+                        this.exclude(1);
+                    if (this.isAspirable) {
+                        this.exclude(0);
                     }
 
-                    // mention that the node is deselected deliberately by the user
-                    board.getGame().setUserPawnDeselected(true);
+                    // The button is clicked to be selected or deselected
+                    // We can do this action only when all the nodes are not percutables nor aspirables
+                    if (!this.isNodeSelected() && !this.board.existNodeAspirable() && !this.board.existNodePercutable()) {
+                        try {
+                            this.select(true);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        try {
+                            this.deselect();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
-                    // we notify the thread game to make it stop waiting for a destination node
-                    // the user turn will end without switching the player turn
-                    // so the user will play again
-                    if(board.getGame().getState().equals(Thread.State.WAITING)) {
-                        synchronized (board.getGame()) {
-                            board.getGame().notify();
+                        // mention that the node is deselected deliberately by the user
+                        board.getGame().setUserPawnDeselected(true);
+
+                        // we notify the thread game to make it stop waiting for a destination node
+                        // the user turn will end without switching the player turn
+                        // so the user will play again
+                        if (board.getGame().getState().equals(Thread.State.WAITING)) {
+                            synchronized (board.getGame()) {
+                                board.getGame().notify();
+                            }
                         }
                     }
                 }

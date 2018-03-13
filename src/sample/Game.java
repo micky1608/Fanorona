@@ -20,7 +20,7 @@ public class Game extends Thread {
             e.printStackTrace();
         }
         this.board = new Board(this);
-        this.computer = new Computer(this);
+        this.computer = new Computer(this, false);
         this.user = new User(this);
         this.playerTurn = PlayerCategory.USER;
         this.nbComputerPawnBeginTurn = 0;
@@ -45,11 +45,21 @@ public class Game extends Thread {
      * change the player to play
      */
     public void switchPlayerTurn() {
-       if (this.playerTurn.equals(PlayerCategory.USER))
+       if (this.playerTurn.equals(PlayerCategory.USER)) {
            this.playerTurn = PlayerCategory.COMPUTER;
+           try {
+               sleep(1000);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           }
 
-       else if (this.playerTurn.equals(PlayerCategory.COMPUTER))
+       }
+
+       else if (this.playerTurn.equals(PlayerCategory.COMPUTER)){
+
            this.playerTurn = PlayerCategory.USER;
+       }
+        System.out.println(this.getBoard().toString());
     }
 
     /**
@@ -129,8 +139,8 @@ public class Game extends Thread {
         return board;
     }
 
-    public void setBoard(Board board){
-        this.board=board;
+    public PlayerCategory getPlayerTurn() {
+        return playerTurn;
     }
 
     public void setUserPawnDeselected(boolean pawnDeselected) {
