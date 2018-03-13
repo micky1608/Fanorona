@@ -240,7 +240,7 @@ public class Board implements Cloneable {
      * @param nodeBeginning
      * @param nodeEnd
      */
-    public void choosePawnsToExclude(Node nodeBeginning, Node nodeEnd){
+    public void choosePawnsToExclude(Node nodeBeginning, Node nodeEnd, boolean isSimulation){
 
         int nbPercussion=0;
         int nbAspiration=0;
@@ -293,13 +293,24 @@ public class Board implements Cloneable {
 
         //If it is the same amounts, we give the choice to the player.
         if(nbPercussion==nbAspiration&&nbPercussion!=0){
-            //We make the pawns bigger so the user can see them easily.
-            controller.setTexte("Choisissez entre percussion et aspiration");
-            for(Node n:nodesPercussion){
-                n.setPercutable(true);
+            if(!isSimulation) {
+                //We make the pawns bigger so the user can see them easily.
+                controller.setTexte("Choisissez entre percussion et aspiration");
+                for (Node n : nodesPercussion) {
+                    n.setPercutable(true);
+                }
+                for (Node n : nodesAspiration) {
+                    n.setAspirable(true);
+                }
             }
-            for(Node n:nodesAspiration){
-                n.setAspirable(true);
+            else{
+                Random random=new Random();
+                if(random.nextInt(2)<1){
+                    excludePawns(1);
+                }
+                else{
+                    excludePawns(0);
+                }
             }
         }
     }
@@ -364,7 +375,7 @@ public class Board implements Cloneable {
      * @return
      */
     public List<Node> possibleCapture (Node nodeBeginning) {
-        // get the opponent color to check if the capture is posible when a neighbour is found
+        // get the opponent color to check if the capture is possible when a neighbour is found
         Color opponentColor = (nodeBeginning.getFill().equals(Node.getColorUser()) ? Node.getColorCpu() : Node.getColorUser());
 
         ArrayList<Node> possibleNodes=new ArrayList<>();
@@ -460,7 +471,7 @@ public class Board implements Cloneable {
 
 
         // exclude the pawns if necessary
-        choosePawnsToExclude(nodeBeginning , destination);
+        choosePawnsToExclude(nodeBeginning , destination, true);
     }
 
 

@@ -70,10 +70,11 @@ public class Controller implements Initializable {
      * @Param texte
      */
     public void setTexte (String texte){
+        javafx.application.Platform.runLater( () -> console.setText(console.getText()+"\n"+texte));
+        console.setScrollTop(Double.MAX_VALUE);
 
         System.out.println(texte);
 
-        console.setText(console.getText()+"\n"+texte);
-        console.setScrollTop(Double.MAX_VALUE);
+
     }
 }

@@ -290,7 +290,7 @@ public class Node extends Circle {
                     this.destinationNodeSelected = true;
 
                     // do the necessary exclusions after this movement
-                    this.board.choosePawnsToExclude(nodeBeginningMovement, this);
+                    this.board.choosePawnsToExclude(nodeBeginningMovement, this, false);
 
                     // wake the game thread which is waiting for the user click
                     if(selectByUser) {

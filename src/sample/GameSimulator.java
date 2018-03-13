@@ -26,7 +26,6 @@ public class GameSimulator {
     public GameSimulator(Board board , PlayerCategory firstToPlay) {
         this.board = board;
         colorPawnToPlay = (firstToPlay.equals(PlayerCategory.USER) ? Node.getColorUser() : Node.getColorCpu());
-        System.out.println("New Game Simulator starting with " + firstToPlay + "\n" + board);
     }
 
     /**
@@ -38,12 +37,10 @@ public class GameSimulator {
      */
     public int simulate () {
         while(!isGameOver()) {
-            System.out.println("Simulate One Move\n" + board);
             simulateOneMove();
             switchColorPawnToPlay();
         }
 
-        System.out.println("END simulation\n" + board);
         return (getPlayerWinner().equals(PlayerCategory.USER) ? 0 : 1);
     }
 

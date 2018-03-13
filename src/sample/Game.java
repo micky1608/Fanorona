@@ -25,7 +25,6 @@ public class Game extends Thread {
         this.playerTurn = PlayerCategory.USER;
         this.nbComputerPawnBeginTurn = 0;
         this.nbUserPawnBeginTurn = 0;
-        new GameSimulator(board.clone() , PlayerCategory.USER).simulate();
         try {
             startGame();
         } catch (InterruptedException e) {
@@ -128,6 +127,10 @@ public class Game extends Thread {
 
     public Board getBoard() {
         return board;
+    }
+
+    public void setBoard(Board board){
+        this.board=board;
     }
 
     public void setUserPawnDeselected(boolean pawnDeselected) {

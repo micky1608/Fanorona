@@ -25,6 +25,12 @@ public class TreeNode {
     // the deepness in the tree (0 for root)
     private int deepness;
 
+    // the probability to win if the computer chooses this node.
+    private int probabilityToWin;
+
+    private Node beginNode;
+    private Node endNode;
+
     // pawns colors
     private static final Color COLOR_USER = Color.WHITE;
     private static final Color COLOR_CPU = Color.BLACK;
@@ -32,21 +38,25 @@ public class TreeNode {
     /**
      * Constructor used to create the root node of the tree.
      */
-    public TreeNode(){
-        this.board=new Board();
+    public TreeNode(Board board){
+        this.board=board;
         this.nodes=this.board.getNodes();
         this.evaluation = 0;
         this.deepness=0;
+        this.probabilityToWin=0;
     }
 
     /**
      * Constructor used to create all the nodes of the tree, except root.
      */
-    public TreeNode(Board board, TreeNode father){
+    public TreeNode(Board board, TreeNode father, Node beginNode, Node endNode){
         this.board=board;
         this.nodes=board.getNodes();
         this.evaluation = 0;
+        this.probabilityToWin=0;
         this.father=father;
+        this.beginNode=beginNode;
+        this.endNode=endNode;
         this.deepness=father.getDeepness()+1;
 
         // evaluation of the board configuration
@@ -77,7 +87,7 @@ public class TreeNode {
                 if(!nodes[i][j].isContainsPawn()){
                     actualEmptyList.add(nodes[i][j]);
                 }
-                else if(nodes[i][j].getFill().equals(deepness % 2 == 0 ? COLOR_USER : COLOR_CPU)&&!board.possibleCapture(nodes[i][j]).isEmpty()){
+                else if(nodes[i][j].getFill().equals(COLOR_CPU)&&!board.possibleCapture(nodes[i][j]).isEmpty()){
                     possibleCapture=true;
                 }
             }
@@ -103,13 +113,13 @@ public class TreeNode {
 
                             //If there is a possible capture, only creates sons where the move makes a capture.
                             if(possibleCapture) {
-                                if (nodes[actualX + i][actualY + j].getFill().equals(deepness % 2 == 0 ? COLOR_USER : COLOR_CPU) && board.possibleCapture(nodes[actualX + i][actualY + j]).contains(emptyNode)) {
+                                if (nodes[actualX + i][actualY + j].getFill().equals(COLOR_CPU) && board.possibleCapture(nodes[actualX + i][actualY + j]).contains(emptyNode)) {
                                     createOneSon(emptyNode, i, j);
                                 }
                             }
                             //If there arn't any possibility, creates every sons possible.
                             else{
-                                if(nodes[actualX + i][actualY + j].getFill().equals(deepness % 2 == 0 ? COLOR_USER : COLOR_CPU)){
+                                if(nodes[actualX + i][actualY + j].getFill().equals(COLOR_CPU)){
                                     createOneSon(emptyNode, i, j);
                                 }
 
@@ -151,8 +161,8 @@ public class TreeNode {
         nextBoard.getNodes()[actualX][actualY].setContainsPawn(true, nextBoard.getNodes()[actualX + moveX][actualY + moveY].getFill().equals(COLOR_USER) ? 0 : 1);
         nextBoard.getNodes()[actualX + moveX][actualY + moveY].setContainsPawn(false, 2);
 
-        nextBoard.choosePawnsToExclude(nextBoard.getNodes()[actualX + moveX][actualY + moveY], nextBoard.getNodes()[actualX][actualY]);
-        this.sons.add(new TreeNode(nextBoard, this));
+        nextBoard.choosePawnsToExclude(nextBoard.getNodes()[actualX + moveX][actualY + moveY], nextBoard.getNodes()[actualX][actualY], true);
+        this.sons.add(new TreeNode(nextBoard, this, nextBoard.getNodes()[actualX + moveX][actualY + moveY], nextBoard.getNodes()[actualX][actualY]));
     }
 
     public ArrayList<TreeNode> getSons() {
@@ -177,7 +187,7 @@ public class TreeNode {
 
         sb.append(board.toString());
 
-        sb.append("Evaluation:"+evaluation+"\t Deepness:"+deepness);
+        sb.append("Evaluation:"+evaluation+"\t Deepness:"+deepness+"\t Probability:"+probabilityToWin);
 
         return sb.toString();
     }
@@ -189,4 +199,19 @@ public class TreeNode {
     public int getEvaluation(){
         return this.evaluation;
     }
+
+    public void setProbabilityToWin(int probability){
+        this.probabilityToWin+=probability;
+    }
+
+    public int getProbabilityToWin(){return probabilityToWin;}
+
+    public Node getBeginNode(){
+        return beginNode;
+    }
+
+    public Node getEndNode() {
+        return endNode;
+    }
 }
+
