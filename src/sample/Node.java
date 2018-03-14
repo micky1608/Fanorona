@@ -65,10 +65,18 @@ public class Node extends Circle {
 
                     // The button was clicked when choosing beetween percussion and aspiration
                     // Here we don't select a node to move
-                    if (this.isPercutable)
+                    if (this.isPercutable) {
                         this.exclude(1);
+                        synchronized (board.getGame()) {
+                            board.getGame().notify();
+                        }
+                    }
+
                     if (this.isAspirable) {
                         this.exclude(0);
+                        synchronized (board.getGame()) {
+                            board.getGame().notify();
+                        }
                     }
 
                     // The button is clicked to be selected or deselected
@@ -291,13 +299,16 @@ public class Node extends Circle {
                     this.destinationNodeSelected = true;
 
                     // do the necessary exclusions after this movement
-                    this.board.choosePawnsToExclude(nodeBeginningMovement, this, false);
+                    boolean equalsCollisionAspiration = this.board.choosePawnsToExclude(nodeBeginningMovement, this, false);
 
                     // wake the game thread which is waiting for the user click
                     if(selectByUser) {
-                        synchronized (board.getGame()) {
-                            board.getGame().notify();
+                        if(!equalsCollisionAspiration) {
+                            synchronized (board.getGame()) {
+                                board.getGame().notify();
+                            }
                         }
+
                     }
                 }
             }

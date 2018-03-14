@@ -29,8 +29,8 @@ public class Game extends Thread {
                 //First line to play against the IA
                 //Second line to test the IA against an IA playing randomly.
 
-                //this.user = new User(this);
-                this.user = new Computer(this, true);
+                this.user = new User(this);
+                //this.user = new Computer(this, true);
 
                 this.playerTurn = PlayerCategory.USER;
                 this.nbComputerPawnBeginTurn = 0;

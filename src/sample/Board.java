@@ -240,7 +240,7 @@ public class Board implements Cloneable {
      * @param nodeBeginning
      * @param nodeEnd
      */
-    public void choosePawnsToExclude(Node nodeBeginning, Node nodeEnd, boolean isSimulation){
+    public boolean choosePawnsToExclude(Node nodeBeginning, Node nodeEnd, boolean isSimulation){
 
         int nbPercussion=0;
         int nbAspiration=0;
@@ -302,6 +302,7 @@ public class Board implements Cloneable {
                 for (Node n : nodesAspiration) {
                     n.setAspirable(true);
                 }
+                return true;
             }
             else{
                 Random random=new Random();
@@ -313,6 +314,7 @@ public class Board implements Cloneable {
                 }
             }
         }
+        return false;
     }
 
     /**
