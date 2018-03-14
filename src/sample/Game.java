@@ -108,6 +108,9 @@ public class Game extends Thread {
             if(playerTurn.equals(PlayerCategory.COMPUTER) && !isGameOver()) {
                 this.nbUserPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.USER);
                 this.nbComputerPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.COMPUTER);
+                if (!board.canPlay(Node.getColorCpu())){
+                    finishGame();
+                }
                 computer.play();
                 if(isGameOver())
                     finishGame();
