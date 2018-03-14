@@ -11,25 +11,40 @@ public class Game extends Thread {
     private int nbComputerPawnBeginTurn;
     private int nbUserPawnBeginTurn;
 
+    //Used to calculate the number of win by our "main" IA vs an other IA.
+    private int nbWin;
+    private int nbLose;
+
 
     @Override
     public void run() {
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        this.board = new Board(this);
-        this.computer = new Computer(this, false);
-        this.user = new User(this);
-        this.playerTurn = PlayerCategory.USER;
-        this.nbComputerPawnBeginTurn = 0;
-        this.nbUserPawnBeginTurn = 0;
-        try {
-            startGame();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for(int i=0;i<200;i++) {
+                this.board = new Board(this);
+                this.computer = new Computer(this, false);
+                //First line to play against the IA
+                //Second line to test the IA against an IA playing randomly.
+
+                //this.user = new User(this);
+                this.user = new Computer(this, true);
+
+                this.playerTurn = PlayerCategory.USER;
+                this.nbComputerPawnBeginTurn = 0;
+                this.nbUserPawnBeginTurn = 0;
+                try {
+                    startGame();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Win:"+nbWin);
+                System.out.println("Lose:"+nbLose+"\n");
+            }
+            System.out.println("Win:"+nbWin);
+            System.out.println("Lose:"+nbLose+"\n");
     }
 
     /**
@@ -47,19 +62,11 @@ public class Game extends Thread {
     public void switchPlayerTurn() {
        if (this.playerTurn.equals(PlayerCategory.USER)) {
            this.playerTurn = PlayerCategory.COMPUTER;
-           try {
-               sleep(1000);
-           } catch (InterruptedException e) {
-               e.printStackTrace();
-           }
-
        }
 
        else if (this.playerTurn.equals(PlayerCategory.COMPUTER)){
-
            this.playerTurn = PlayerCategory.USER;
        }
-        System.out.println(this.getBoard().toString());
     }
 
     /**
@@ -83,11 +90,13 @@ public class Game extends Thread {
             board.setDisableAllNodes(false);
 
             // user plays as much times as the rules allow
-            while(playerTurn.equals(PlayerCategory.USER)) {
+            if(playerTurn.equals(PlayerCategory.USER)) {
                 this.nbUserPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.USER);
                 this.nbComputerPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.COMPUTER);
+                if (!board.canPlay(Node.getColorUser())){
+                    finishGame();
+                }
                 user.play();
-                System.out.println("User captured pawns : " + capturePawn(PlayerCategory.USER));
                 if(isGameOver())
                     finishGame();
             }
@@ -96,7 +105,7 @@ public class Game extends Thread {
             board.setDisableAllNodes(true);
 
             // computer plays as much times as the rules allow
-            while(playerTurn.equals(PlayerCategory.COMPUTER) && !isGameOver()) {
+            if(playerTurn.equals(PlayerCategory.COMPUTER) && !isGameOver()) {
                 this.nbUserPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.USER);
                 this.nbComputerPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.COMPUTER);
                 computer.play();
@@ -108,6 +117,8 @@ public class Game extends Thread {
 
     private void finishGame() {
         board.setTextInConsole("Game finished : " + (getPlayerWinner().equals(PlayerCategory.USER) ? "You win" : "You lose"));
+        nbWin+=getPlayerWinner().equals(PlayerCategory.COMPUTER)?1:0;
+        nbLose+=getPlayerWinner().equals(PlayerCategory.USER)?1:0;
     }
 
     /**
@@ -119,7 +130,10 @@ public class Game extends Thread {
             return PlayerCategory.COMPUTER;
         else if(board.getNbPawnOnBoard(PlayerCategory.COMPUTER) == 0)
             return PlayerCategory.USER;
-
+        else if(!this.board.canPlay(Node.getColorUser()))
+            return PlayerCategory.COMPUTER;
+        else if(!this.board.canPlay(Node.getColorCpu()))
+            return PlayerCategory.USER;
         return null;
     }
 
@@ -145,5 +159,13 @@ public class Game extends Thread {
 
     public void setUserPawnDeselected(boolean pawnDeselected) {
         ((User)user).setPawnDeselected(pawnDeselected);
+    }
+
+    public int getNbLose() {
+        return nbLose;
+    }
+
+    public int getNbWin() {
+        return nbWin;
     }
 }

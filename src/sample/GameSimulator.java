@@ -35,22 +35,33 @@ public class GameSimulator {
      * @return 0 if the user win
      * @return 1 if the computer win
      */
-    public int simulate () {
+    public int simulate (Boolean testing) {
+        boolean canPlay;
         while(!isGameOver()) {
-            simulateOneMove();
+            canPlay=simulateOneMove();
+            //If a player can't play, he lost.
+            if(!canPlay){
+                return this.colorPawnToPlay.equals(Color.WHITE)?0:1;
+            }
             switchColorPawnToPlay();
         }
-
+        if(testing){
+            return new Random().nextInt(5);
+        }
         return (getPlayerWinner().equals(PlayerCategory.USER) ? 0 : 1);
     }
 
-    private void simulateOneMove() {
+    private boolean simulateOneMove() {
 
         // get a list which contains all tha pawns that can move this turn
         List<Node> nodesToMove = getPawnsToMove();
+        if(nodesToMove.size()==0){
+            return false;
+        }
 
         // generate a random number between 0 and the list size less 1
         Random rand = new Random();
+
         int indice = rand.nextInt(nodesToMove.size());
 
         // get the random node that is selected to move
@@ -58,6 +69,8 @@ public class GameSimulator {
 
         // make this node move randomly
         board.randomMove(nodeBeginning);
+
+        return true;
 
     }
 
@@ -88,37 +101,24 @@ public class GameSimulator {
      */
     private List<Node> getPawnsToMove () {
         List<Node> nodes = new ArrayList<>();
-        boolean possibleCapture = false;
 
         //Check if there is at least one move which will capture an enemy pawn.
         for(int i=0;i<9;i++){
             for(int j=0; j<5 ; j++){
                 if(board.getNodes()[i][j].getFill().equals(this.colorPawnToPlay)&&!board.possibleCapture(board.getNodes()[i][j]).isEmpty()){
-                    possibleCapture = true;
+                    nodes.add(board.getNodes()[i][j]);
                 }
             }
         }
 
-        for(int i=0 ; i<9 ; i++) {
-            for(int j=0 ; j<5 ; j++) {
+        if(nodes.isEmpty()) {
+            for (int i = 0; i < 9; i++) {
+                for (int j = 0; j < 5; j++) {
 
-                // get the node with (i,j) coordinate
-                Node node = board.getNodes()[i][j];
-
-                //If there is a possible way to capture an enemy pawn, adds only the pawns which can capture an enemy pawn.
-                if(possibleCapture){
-                    if(node.getFill().equals(this.colorPawnToPlay)&&!board.possibleCapture(node).isEmpty()){
-                        nodes.add(node);
-                    }
-                }
-
-                //If there arn't any possibility to capture an enemy pawn, adds all the pawns which can move.
-                else{
-                    if(node.getFill().equals(this.colorPawnToPlay)) {
-
+                    if (board.getNodes()[i][j].getFill().equals(this.colorPawnToPlay)) {
                         // check if a move is possible
-                        if (board.canMove(node))
-                            nodes.add(node);
+                        if (board.canMove(board.getNodes()[i][j]))
+                            nodes.add(board.getNodes()[i][j]);
                     }
                 }
             }

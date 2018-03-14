@@ -345,6 +345,17 @@ public class Board implements Cloneable {
         nodesAspiration.clear();
     }
 
+    public boolean canPlay(Color color){
+        for(int i=0;i<9;i++){
+            for(int j=0;j<5;j++){
+                if(nodes[i][j].getFill().equals(color)&&canMove(nodes[i][j])){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Return true if the node can move and false otherwise
      * @return

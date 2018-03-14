@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.util.Random;
+
 public class Main extends Application {
 
     private static Controller controller = null;
@@ -35,7 +37,5 @@ public class Main extends Application {
         Game game = new Game();
         game.start();
         launch(args);
-
-
     }
 }

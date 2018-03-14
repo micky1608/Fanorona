@@ -1,6 +1,9 @@
 package sample;
 
+import javafx.scene.paint.Color;
+
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Computer extends Player {
     private TreeNode root;
@@ -11,43 +14,61 @@ public class Computer extends Player {
 
     public Computer(Game game, Boolean testing) {
         super(game);
-        createTreeSearch();
         this.testing=testing;
+        createTreeSearch();
+
     }
 
     private void createTreeSearch() {
         root = new TreeNode(game.getBoard().clone());
-        root.createSons();
+        root.createSons(testing);
 
         //TODO
     }
 
     @Override
     public void selectNodeBeginning() {
-        game.setTextInConsole("Computer PLAY");
+        if(testing){
+            game.setTextInConsole("Computer test PLAY");
+        }
+        else{
+            game.setTextInConsole("Computer PLAY");
+        }
         createTreeSearch();
         int maxProbabilityToWin=0;
         ArrayList<TreeNode> sons;
         sons=root.getSons();
 
-        for(int j=0;j<sons.size();j++){
-            TreeNode tn=sons.get(j);
-            for(int i=0;i<(30);i++){
-                gameSimulator=new GameSimulator(game.getBoard().clone(), PlayerCategory.COMPUTER);
-                tn.setProbabilityToWin(gameSimulator.simulate());
-                maxProbabilityToWin = maxProbabilityToWin < tn.getProbabilityToWin() ? tn.getProbabilityToWin() : maxProbabilityToWin;
-            }
-            System.out.println(tn.toString());
-        }
-        for(TreeNode tn:sons){
-            if(tn.getProbabilityToWin()==maxProbabilityToWin){
-                try {
-                    game.getBoard().getNodes()[tn.getBeginNode().getX()][tn.getBeginNode().getY()].select(false);
-                    game.getBoard().getNodes()[tn.getEndNode().getX()][tn.getEndNode().getY()].select(false);
-                    break;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        //If it's the main IA, makes X simulations/treenode and chose the one with the most chances to win.
+        if(!testing) {
+            for(TreeNode tn:sons){
+                for(int i=0;i<1000; i++){
+                    gameSimulator=new GameSimulator(game.getBoard().clone(), testing?PlayerCategory.USER:PlayerCategory.COMPUTER);
+                    tn.setProbabilityToWin(gameSimulator.simulate(testing));
                 }
+                maxProbabilityToWin = Math.max(maxProbabilityToWin, tn.getProbabilityToWin());
+            }
+
+            for (TreeNode tn : sons) {
+                if (tn.getProbabilityToWin() == maxProbabilityToWin) {
+                    try {
+                        game.getBoard().getNodes()[tn.getBeginNode().getX()][tn.getBeginNode().getY()].select(testing);
+                        game.getBoard().getNodes()[tn.getEndNode().getX()][tn.getEndNode().getY()].select(testing);
+                        break;
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        //If it's the test IA, chose a random son.
+        else{
+            TreeNode randomSon = sons.get(new Random().nextInt(sons.size()));
+            try {
+                game.getBoard().getNodes()[randomSon.getBeginNode().getX()][randomSon.getBeginNode().getY()].select(testing);
+                game.getBoard().getNodes()[randomSon.getEndNode().getX()][randomSon.getEndNode().getY()].select(testing);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }

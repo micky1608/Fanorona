@@ -76,7 +76,14 @@ public class TreeNode {
      * This method will create all the sons of this tree node.
      * Every son will contain a possibility of how board could be after one move
      */
-    public void createSons(){
+    public void createSons(Boolean testing){
+        Color color;
+        if(testing){
+            color=COLOR_USER;
+        }
+        else{
+            color=COLOR_CPU;
+        }
         // we will store in this list all the empty nodes of the game.
         ArrayList<Node> actualEmptyList = new ArrayList<>();
         boolean possibleCapture=false;
@@ -87,7 +94,7 @@ public class TreeNode {
                 if(!nodes[i][j].isContainsPawn()){
                     actualEmptyList.add(nodes[i][j]);
                 }
-                else if(nodes[i][j].getFill().equals(COLOR_CPU)&&!board.possibleCapture(nodes[i][j]).isEmpty()){
+                else if(nodes[i][j].getFill().equals(color)&&!board.possibleCapture(nodes[i][j]).isEmpty()){
                     possibleCapture=true;
                 }
             }
@@ -106,25 +113,24 @@ public class TreeNode {
 
             for (int i = -1; i <= 1; i++) {
                 for (int j = -1; j <= 1; j++) {
+                    // check if this is a correct neighbour
+                    // if the node is odd : add the condition either i or j = 0
+                    if ((actualX + i) < 9 && (actualX + i) >= 0 && (actualY + j) < 5 && (actualY + j) >= 0 && !(i == 0 && j == 0) && (emptyNode.isEven() ? true : (i == 0 || j == 0))) {
 
-                        // check if this is a correct neighbour
-                        // if the node is odd : add the condition either i or j = 0
-                        if ((actualX + i) < 9 && (actualX + i) >= 0 && (actualY + j) < 5 && (actualY + j) >= 0 && !(i == 0 && j == 0) && (emptyNode.isEven() ? true : (i == 0 || j == 0))) {
-
-                            //If there is a possible capture, only creates sons where the move makes a capture.
-                            if(possibleCapture) {
-                                if (nodes[actualX + i][actualY + j].getFill().equals(COLOR_CPU) && board.possibleCapture(nodes[actualX + i][actualY + j]).contains(emptyNode)) {
-                                    createOneSon(emptyNode, i, j);
-                                }
-                            }
-                            //If there arn't any possibility, creates every sons possible.
-                            else{
-                                if(nodes[actualX + i][actualY + j].getFill().equals(COLOR_CPU)){
-                                    createOneSon(emptyNode, i, j);
-                                }
-
+                        //If there is a possible capture, only creates sons where the move makes a capture.
+                        if(possibleCapture) {
+                            if (nodes[actualX + i][actualY + j].getFill().equals(color) && board.possibleCapture(nodes[actualX + i][actualY + j]).contains(emptyNode)) {
+                                createOneSon(emptyNode, i, j);
                             }
                         }
+                        //If there arn't any possibility, creates every sons possible.
+                        else{
+                            if(nodes[actualX + i][actualY + j].getFill().equals(color)){
+                                createOneSon(emptyNode, i, j);
+                            }
+
+                        }
+                    }
                 }
             }
         }
@@ -138,7 +144,6 @@ public class TreeNode {
      * @param moveY
      */
     private void createOneSon(Node emptyNode , int moveX , int moveY) {
-
         // get the empty node position
         int actualX = emptyNode.getX();
         int actualY = emptyNode.getY();
