@@ -1,6 +1,5 @@
-package sample;
+package application;
 
-import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;

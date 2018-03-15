@@ -1,0 +1,16 @@
+Button {
+        -fx-background-color : #000000;
+        -fx-border-color : #757575;
+        -fx-border-width : 1,5;
+        -fx-font-family : georgia;
+        -fx-font-style  :italic;
+        -fx-font-size: 18px;
+}
+Button:hover {
+        -fx-background-color : #B71C1C;
+        -fx-cursor: hand;
+}
+
+Label {
+    fx-text-align : center;
+}

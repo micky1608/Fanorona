@@ -1,4 +1,9 @@
-package sample;
+package application;
+
+import javafx.application.Platform;
+
+import java.io.IOException;
+import java.lang.management.PlatformLoggingMXBean;
 
 public class Game extends Thread {
 
@@ -23,7 +28,23 @@ public class Game extends Thread {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            for(int i=0;i<200;i++) {
+
+        this.board = new Board(this);
+        this.computer = new Computer(this, false);
+        this.user = new User(this);
+
+        this.playerTurn = PlayerCategory.USER;
+        this.nbComputerPawnBeginTurn = 0;
+        this.nbUserPawnBeginTurn = 0;
+        try {
+            startGame();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+            /*for(int i=0;i<200;i++) {
                 this.board = new Board(this);
                 this.computer = new Computer(this, false);
                 //First line to play against the IA
@@ -39,12 +60,16 @@ public class Game extends Thread {
                     startGame();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 System.out.println("Win:"+nbWin);
                 System.out.println("Lose:"+nbLose+"\n");
             }
             System.out.println("Win:"+nbWin);
             System.out.println("Lose:"+nbLose+"\n");
+
+            */
     }
 
     /**
@@ -83,7 +108,7 @@ public class Game extends Thread {
         return false;
     }
 
-    private void startGame() throws InterruptedException {
+    private void startGame() throws InterruptedException, IOException {
         while (!isGameOver()) {
 
             //enable the clicks on the nodes
@@ -118,17 +143,29 @@ public class Game extends Thread {
         }
     }
 
-    private void finishGame() {
+    private void finishGame() throws InterruptedException, IOException {
         board.setTextInConsole("Game finished : " + (getPlayerWinner().equals(PlayerCategory.USER) ? "You win" : "You lose"));
         nbWin+=getPlayerWinner().equals(PlayerCategory.COMPUTER)?1:0;
         nbLose+=getPlayerWinner().equals(PlayerCategory.USER)?1:0;
+
+        Platform.runLater(() -> {
+            try {
+                Windows.changeScene(Main.getController().getStage() , "endGame.fxml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        sleep(300);
+        Main.getEndGameController().setGame(this);
+
     }
 
     /**
      * Get the winner of the game
      * @return
      */
-    private PlayerCategory getPlayerWinner() {
+    public PlayerCategory getPlayerWinner() {
         if(board.getNbPawnOnBoard(PlayerCategory.USER) == 0)
             return PlayerCategory.COMPUTER;
         else if(board.getNbPawnOnBoard(PlayerCategory.COMPUTER) == 0)

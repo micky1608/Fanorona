@@ -1,4 +1,4 @@
-package sample;
+package application;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,6 +25,10 @@ public class Controller implements Initializable {
 
     @FXML
     private TextArea console;
+
+    public Controller() {
+        Main.setController(this);
+    }
 
 
     /**
@@ -72,7 +77,13 @@ public class Controller implements Initializable {
     public void setTexte (String texte){
         javafx.application.Platform.runLater( () -> console.setText(console.getText()+"\n"+texte));
         console.setScrollTop(Double.MAX_VALUE);
+    }
 
-
+    /**
+     * Get the stage containing this scene
+     * @return
+     */
+    public Stage getStage() {
+        return (Stage) anchorPane.getScene().getWindow();
     }
 }

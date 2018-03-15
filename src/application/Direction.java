@@ -1,4 +1,4 @@
-package sample;
+package application;
 
 public enum Direction {
     NORD(0,1),

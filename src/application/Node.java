@@ -1,4 +1,4 @@
-package sample;
+package application;
 
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -308,7 +308,6 @@ public class Node extends Circle {
                                 board.getGame().notify();
                             }
                         }
-
                     }
                 }
             }
