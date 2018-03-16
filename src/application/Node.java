@@ -299,7 +299,7 @@ public class Node extends Circle {
                     this.destinationNodeSelected = true;
 
                     // do the necessary exclusions after this movement
-                    boolean equalsCollisionAspiration = this.board.choosePawnsToExclude(nodeBeginningMovement, this, false);
+                    boolean equalsCollisionAspiration = this.board.choosePawnsToExclude(nodeBeginningMovement, this, true, false);
 
                     // wake the game thread which is waiting for the user click
                     if(selectByUser) {
@@ -308,6 +308,9 @@ public class Node extends Circle {
                                 board.getGame().notify();
                             }
                         }
+                    }
+                    if(!selectByUser&&equalsCollisionAspiration){
+                        this.board.getGame().getComputer().selectNodeEnd();
                     }
                 }
             }

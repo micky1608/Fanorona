@@ -239,7 +239,7 @@ public class Board implements Cloneable {
      * @param nodeBeginning
      * @param nodeEnd
      */
-    public boolean choosePawnsToExclude(Node nodeBeginning, Node nodeEnd, boolean isSimulation){
+    public boolean choosePawnsToExclude(Node nodeBeginning, Node nodeEnd, boolean isPlayerTurn, boolean isSimulation){
 
         int nbPercussion=0;
         int nbAspiration=0;
@@ -293,15 +293,26 @@ public class Board implements Cloneable {
         //If it is the same amounts, we give the choice to the player.
         if(nbPercussion==nbAspiration&&nbPercussion!=0){
             if(!isSimulation) {
-                //We make the pawns bigger so the user can see them easily.
-                controller.setTexte("Choisissez entre percussion et aspiration");
-                for (Node n : nodesPercussion) {
-                    n.setPercutable(true);
+                if(isPlayerTurn) {
+                    //We make the pawns bigger so the user can see them easily.
+                    controller.setTexte("Choisissez entre percussion et aspiration");
+                    for (Node n : nodesPercussion) {
+                        n.setPercutable(true);
+                    }
+                    for (Node n : nodesAspiration) {
+                        n.setAspirable(true);
+                    }
+                    return true;
                 }
-                for (Node n : nodesAspiration) {
-                    n.setAspirable(true);
+                else{
+                    for (Node n : nodesPercussion) {
+                        n.setPercutable(true);
+                    }
+                    for (Node n : nodesAspiration) {
+                        n.setAspirable(true);
+                    }
+                    return true;
                 }
-                return true;
             }
             else{
                 Random random=new Random();
@@ -483,7 +494,7 @@ public class Board implements Cloneable {
 
 
         // exclude the pawns if necessary
-        choosePawnsToExclude(nodeBeginning , destination, true);
+        choosePawnsToExclude(nodeBeginning , destination, false, true);
     }
 
 

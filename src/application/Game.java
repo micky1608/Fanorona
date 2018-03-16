@@ -208,4 +208,8 @@ public class Game extends Thread {
     public int getNbWin() {
         return nbWin;
     }
+
+    public Player getComputer(){
+        return computer;
+    }
 }

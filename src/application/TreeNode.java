@@ -166,7 +166,7 @@ public class TreeNode {
         nextBoard.getNodes()[actualX][actualY].setContainsPawn(true, nextBoard.getNodes()[actualX + moveX][actualY + moveY].getFill().equals(COLOR_USER) ? 0 : 1);
         nextBoard.getNodes()[actualX + moveX][actualY + moveY].setContainsPawn(false, 2);
 
-        nextBoard.choosePawnsToExclude(nextBoard.getNodes()[actualX + moveX][actualY + moveY], nextBoard.getNodes()[actualX][actualY], true);
+        nextBoard.choosePawnsToExclude(nextBoard.getNodes()[actualX + moveX][actualY + moveY], nextBoard.getNodes()[actualX][actualY],false, true);
         this.sons.add(new TreeNode(nextBoard, this, nextBoard.getNodes()[actualX + moveX][actualY + moveY], nextBoard.getNodes()[actualX][actualY]));
     }
 
@@ -217,6 +217,10 @@ public class TreeNode {
 
     public Node getEndNode() {
         return endNode;
+    }
+
+    public Node[][] getNodes() {
+        return nodes;
     }
 }
 
