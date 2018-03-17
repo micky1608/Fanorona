@@ -128,11 +128,27 @@ public class TreeNode {
                             if(nodes[actualX + i][actualY + j].getFill().equals(color)){
                                 createOneSon(emptyNode, i, j);
                             }
-
                         }
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * This method will create all the sons of this tree node.
+     * Every son will contain a possibility of how board could be after one move
+     */
+    public void createSons(Boolean testing, Node lastPlayed, ArrayList<Node> alreadyVisited) {
+        ArrayList<Node> visited=new ArrayList<>();
+        //We recreate the ArrayList with the nodes of the board of the treenode (which is not the same as the one of Computer)
+        for(Node node: alreadyVisited){
+            visited.add(nodes[node.getX()][node.getY()]);
+        }
+
+        for(Node node:board.possibleCapture(lastPlayed)){
+            if(!visited.contains(node))
+                createOneSon(node, lastPlayed.getX()-node.getX(), lastPlayed.getY()-node.getY());
         }
     }
 

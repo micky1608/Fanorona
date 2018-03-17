@@ -11,11 +11,14 @@ public class GameSimulator {
     // the board representing the state of the game
     private Board board;
 
-    // the number of game simulation we will do from the initial board
-    private static final int NB_SIMULATION = 3;
-
     // the pawns color of the player who is turn to play
     private Color colorPawnToPlay;
+
+    private Node lastPlayed;
+
+    private int evalutation;
+
+    private ArrayList<Node> alreadyVisited;
 
 
     /**
@@ -25,6 +28,8 @@ public class GameSimulator {
     public GameSimulator(Board board , PlayerCategory firstToPlay) {
         this.board = board;
         colorPawnToPlay = (firstToPlay.equals(PlayerCategory.USER) ? Node.getColorUser() : Node.getColorCpu());
+        evalutation = calculateEvaluation();
+        alreadyVisited=new ArrayList<>();
     }
 
     /**
@@ -34,7 +39,7 @@ public class GameSimulator {
      * @return 0 if the user win
      * @return 1 if the computer win
      */
-    public int simulate (Boolean testing) {
+    public int simulate () {
         boolean canPlay;
         while(!isGameOver()) {
             canPlay=simulateOneMove();
@@ -44,30 +49,44 @@ public class GameSimulator {
             }
             switchColorPawnToPlay();
         }
-        if(testing){
-            return new Random().nextInt(5);
-        }
         return (getPlayerWinner().equals(PlayerCategory.USER) ? 0 : 1);
     }
 
     private boolean simulateOneMove() {
+        //Case we didn't capture pawns last turn.
+        if(evalutation == calculateEvaluation()) {
+            // get a list which contains all tha pawns that can move this turn
+            List<Node> nodesToMove = getPawnsToMove();
+            if (nodesToMove.size() == 0) {
+                return false;
+            }
 
-        // get a list which contains all tha pawns that can move this turn
-        List<Node> nodesToMove = getPawnsToMove();
-        if(nodesToMove.size()==0){
-            return false;
+            // generate a random number between 0 and the list size less 1
+            Random rand = new Random();
+
+            int indice = rand.nextInt(nodesToMove.size());
+
+            alreadyVisited.clear();
+
+            // get the random node that is selected to move
+            Node nodeBeginning = nodesToMove.get(indice);
+
+            alreadyVisited.add(nodeBeginning);
+            // make this node move randomly and store the node
+            lastPlayed = board.randomMove(nodeBeginning);
+
+
+        }
+        //Case we captured pawns last turn.
+        else{
+            //If the pawn which we made the capture can capture again, we play it.
+            if(board.possibleCapture(lastPlayed, alreadyVisited).size()>0){
+                alreadyVisited.add(lastPlayed);
+                lastPlayed = board.randomMove(lastPlayed, alreadyVisited);
+            }
+            evalutation=calculateEvaluation();
         }
 
-        // generate a random number between 0 and the list size less 1
-        Random rand = new Random();
-
-        int indice = rand.nextInt(nodesToMove.size());
-
-        // get the random node that is selected to move
-        Node nodeBeginning = nodesToMove.get(indice);
-
-        // make this node move randomly
-        board.randomMove(nodeBeginning);
 
         return true;
 
@@ -86,6 +105,7 @@ public class GameSimulator {
      * @return
      */
     private PlayerCategory getPlayerWinner() {
+
         if(board.getNbPawnOnBoard(PlayerCategory.USER) == 0)
             return PlayerCategory.COMPUTER;
         else if(board.getNbPawnOnBoard(PlayerCategory.COMPUTER) == 0)
@@ -130,10 +150,28 @@ public class GameSimulator {
      * Method to change the active player by switching the color of the pawns that have to move
      */
     private void switchColorPawnToPlay() {
-        if (this.colorPawnToPlay.equals(Node.getColorCpu()))
-            colorPawnToPlay = Node.getColorUser();
-        else if (this.colorPawnToPlay.equals(Node.getColorUser()))
-            colorPawnToPlay = Node.getColorCpu();
+        if(evalutation==calculateEvaluation()) {
+            if (this.colorPawnToPlay.equals(Node.getColorCpu()))
+                colorPawnToPlay = Node.getColorUser();
+            else if (this.colorPawnToPlay.equals(Node.getColorUser()))
+                colorPawnToPlay = Node.getColorCpu();
+        }
+    }
+
+    private int calculateEvaluation(){
+        int evaluation=0;
+        // evaluation of the board configuration
+        for(int i=0;i<9;i++){
+            for(int j=0;j<5;j++){
+                if(board.getNodes()[i][j].getFill().equals(Node.getColorUser())){
+                    evaluation++;
+                }
+                else if(board.getNodes()[i][j].getFill().equals(Node.getColorCpu())){
+                    evaluation--;
+                }
+            }
+        }
+        return evaluation;
     }
 
 

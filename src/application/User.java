@@ -1,9 +1,15 @@
 package application;
 
+import java.util.ArrayList;
+
 public class User extends Player {
 
     // boolean to know when a pawn was deselected to cancel the turn and restart it
     private boolean pawnDeselected;
+
+    private Node lastPlayed;
+
+    private ArrayList<Node> alreadyVisited;
 
     /**
      * Constructor
@@ -12,6 +18,7 @@ public class User extends Player {
     public User(Game game) {
         super(game);
         this.pawnDeselected = false;
+        alreadyVisited=new ArrayList<>();
     }
 
     public void setPawnDeselected(boolean pawnDeselected) {
@@ -20,6 +27,9 @@ public class User extends Player {
 
     @Override
     public void selectNodeBeginning() throws InterruptedException {
+        if(!this.game.isReplay()){
+            alreadyVisited.clear();
+        }
 
         // tell the user that he has to choose a pawn
         game.setTextInConsole("Your turn : Choose a pawn to move");
@@ -85,5 +95,17 @@ public class User extends Player {
         }
 
         this.pawnDeselected = false;
+    }
+
+    public Node getLastPlayed() {
+        return lastPlayed;
+    }
+
+    public void setLastPlayed(Node lastPlayed) {
+        this.lastPlayed = lastPlayed;
+    }
+
+    public ArrayList<Node> getAlreadyVisited() {
+        return alreadyVisited;
     }
 }

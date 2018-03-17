@@ -6,26 +6,36 @@ import java.util.Random;
 public class Computer extends Player {
     private TreeNode root;
     private GameSimulator gameSimulator;
-
+    private Node lastPlayed;
     private Boolean testing;
+    private ArrayList<Node> alreadyVisited;
 
 
     public Computer(Game game, Boolean testing) {
         super(game);
         this.testing=testing;
-        createTreeSearch();
-
+        this.lastPlayed=new Node(0,0,this.game.getBoard());
+        this.alreadyVisited=new ArrayList<>();
     }
 
     private void createTreeSearch() {
         root = new TreeNode(game.getBoard().clone());
-        root.createSons(testing);
-
-        //TODO
+        if(game.isReplay()) {
+            if (!game.getBoard().possibleCapture(lastPlayed, alreadyVisited).isEmpty())
+                root.createSons(testing, root.getNodes()[lastPlayed.getX()][lastPlayed.getY()], alreadyVisited);
+        }
+        else
+            root.createSons(testing);
     }
 
     @Override
     public void selectNodeBeginning() {
+        for(Node node: alreadyVisited){
+            System.out.println(node.getX()+" "+node.getY());
+        }
+        if(!game.isReplay()){
+            alreadyVisited.clear();
+        }
         if(testing){
             game.setTextInConsole("Computer test PLAY");
         }
@@ -40,9 +50,9 @@ public class Computer extends Player {
         //If it's the main IA, makes X simulations/treenode and chose the one with the most chances to win.
         if(!testing) {
             for(TreeNode tn:sons){
-                for(int i=0;i<1000; i++){
+                for(int i=0;i<10; i++){
                     gameSimulator=new GameSimulator(game.getBoard().clone(), testing?PlayerCategory.USER:PlayerCategory.COMPUTER);
-                    tn.setProbabilityToWin(gameSimulator.simulate(testing));
+                    tn.setProbabilityToWin(gameSimulator.simulate());
                 }
                 maxProbabilityToWin = Math.max(maxProbabilityToWin, tn.getProbabilityToWin());
             }
@@ -52,6 +62,8 @@ public class Computer extends Player {
                     try {
                         game.getBoard().getNodes()[tn.getBeginNode().getX()][tn.getBeginNode().getY()].select(testing);
                         game.getBoard().getNodes()[tn.getEndNode().getX()][tn.getEndNode().getY()].select(testing);
+                        alreadyVisited.add(game.getBoard().getNodes()[tn.getBeginNode().getX()][tn.getBeginNode().getY()]);
+                        lastPlayed=tn.getEndNode();
                         break;
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -65,6 +77,8 @@ public class Computer extends Player {
             try {
                 game.getBoard().getNodes()[randomSon.getBeginNode().getX()][randomSon.getBeginNode().getY()].select(testing);
                 game.getBoard().getNodes()[randomSon.getEndNode().getX()][randomSon.getEndNode().getY()].select(testing);
+                alreadyVisited.add(game.getBoard().getNodes()[randomSon.getBeginNode().getX()][randomSon.getBeginNode().getY()]);
+                lastPlayed = randomSon.getEndNode();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -106,5 +120,9 @@ public class Computer extends Player {
 
             }
         }
+    }
+
+    public Node getLastPlayed() {
+        return lastPlayed;
     }
 }

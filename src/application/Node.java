@@ -250,7 +250,7 @@ public class Node extends Circle {
             if(!board.existNodeSelected()) {
 
                 if (selectByUser) {
-                    if (colorNode.equals(COLOR_USER)) {
+                    if (colorNode.equals(COLOR_USER)&&(board.allNodesPossibleCapture(getColorUser()).isEmpty()||board.allNodesPossibleCapture(getColorUser()).contains(this))) {
 
                         // user clicked on one of his pawns so we select that
                         this.isNodeSelected = true;
@@ -262,6 +262,9 @@ public class Node extends Circle {
                         synchronized (board.getGame()) {
                             board.getGame().notify();
                         }
+                    }
+                    else{
+                        board.getController().setTexte("Un autre pion peut faire une prise.");
                     }
 
                 } else {
@@ -279,39 +282,53 @@ public class Node extends Circle {
             if(board.existNodeSelected()) {
                 Node nodeBeginningMovement = board.getNodeSelected();
 
-                if(this.isNeighborOf(nodeBeginningMovement)) {
+                if(this.isNeighborOf(nodeBeginningMovement)){
+                    //Verify if the node hasn't be already visited, if it can make a movement that will take an ennemy pawn, if it's selected by the user.
+                    if((selectByUser&&!board.getGame().getUser().getAlreadyVisited().contains(this)&&board.possibleCapture(nodeBeginningMovement,board.getGame().getUser().getAlreadyVisited()).contains(this))||!selectByUser) {
+                        // We get the color of the initial node.
+                        int colorCode = 2;
+                        if (nodeBeginningMovement.getFill().equals(COLOR_USER)) colorCode = 0;
+                        if (nodeBeginningMovement.getFill().equals(COLOR_CPU)) colorCode = 1;
 
-                    // We get the color of the initial node.
-                    int colorCode = 2;
-                    if(nodeBeginningMovement.getFill().equals(COLOR_USER)) colorCode = 0;
-                    if(nodeBeginningMovement.getFill().equals(COLOR_CPU)) colorCode = 1;
+                        // Indicates that the initial node will now be empty.
+                        nodeBeginningMovement.setContainsPawn(false, 2);
 
-                    // Indicates that the initial node will now be empty.
-                    nodeBeginningMovement.setContainsPawn(false , 2);
+                        // The initial node won't be selected after this movement.
+                        nodeBeginningMovement.deselect();
 
-                    // The initial node won't be selected after this movement.
-                    nodeBeginningMovement.deselect();
+                        // The new node contains now a pawn, with the same color.
+                        this.setContainsPawn(true, colorCode);
 
-                    // The new node contains now a pawn, with the same color.
-                    this.setContainsPawn(true , colorCode);
+                        // inform that this node is the chosen destination node
+                        this.destinationNodeSelected = true;
 
-                    // inform that this node is the chosen destination node
-                    this.destinationNodeSelected = true;
+                        // do the necessary exclusions after this movement
+                        boolean equalsCollisionAspiration = this.board.choosePawnsToExclude(nodeBeginningMovement, this, true, false);
 
-                    // do the necessary exclusions after this movement
-                    boolean equalsCollisionAspiration = this.board.choosePawnsToExclude(nodeBeginningMovement, this, true, false);
-
-                    // wake the game thread which is waiting for the user click
-                    if(selectByUser) {
-                        if(!equalsCollisionAspiration) {
-                            synchronized (board.getGame()) {
-                                board.getGame().notify();
+                        // wake the game thread which is waiting for the user click
+                        if (selectByUser) {
+                            if (!equalsCollisionAspiration) {
+                                synchronized (board.getGame()) {
+                                    board.getGame().notify();
+                                }
                             }
+                            this.board.getGame().getUser().setLastPlayed(this);
+                            this.board.getGame().getUser().getAlreadyVisited().add(nodeBeginningMovement);
+                        }
+                        if (!selectByUser && equalsCollisionAspiration) {
+                            this.board.getGame().getComputer().selectNodeEnd();
                         }
                     }
-                    if(!selectByUser&&equalsCollisionAspiration){
-                        this.board.getGame().getComputer().selectNodeEnd();
+                    else{
+                        if(board.getGame().getUser().getAlreadyVisited().contains(this))
+                            this.board.getController().setTexte("Noeud déjà visité lors de ce tour.");
+                        else if(!board.possibleCapture(nodeBeginningMovement,board.getGame().getUser().getAlreadyVisited()).contains(this)){
+                            this.board.getController().setTexte("La destination ne permet pas une capture.");
+                        }
                     }
+                }
+                else{
+                    this.board.getController().setTexte("Ce noeud n'est pas un voisin du premier noeud choisi.");
                 }
             }
         }

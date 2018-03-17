@@ -8,17 +8,20 @@ import java.lang.management.PlatformLoggingMXBean;
 public class Game extends Thread {
 
     private Board board;
-    private Player computer;
-    private Player user;
+    private Computer computer;
+    private User user;
 
     private PlayerCategory playerTurn;
 
     private int nbComputerPawnBeginTurn;
     private int nbUserPawnBeginTurn;
 
+    private boolean replay;
+
     //Used to calculate the number of win by our "main" IA vs an other IA.
     private int nbWin;
     private int nbLose;
+    private int evaluation;
 
 
     @Override
@@ -85,37 +88,42 @@ public class Game extends Thread {
      * change the player to play
      */
     public void switchPlayerTurn() {
-       if (this.playerTurn.equals(PlayerCategory.USER)) {
-           this.playerTurn = PlayerCategory.COMPUTER;
-       }
-
-       else if (this.playerTurn.equals(PlayerCategory.COMPUTER)){
-           this.playerTurn = PlayerCategory.USER;
-       }
-    }
-
-    /**
-     * tell if the player captured pawn during his last movement
-     * @return
-     */
-    public boolean capturePawn(PlayerCategory playerCategory) {
-        switch (playerCategory) {
-            case USER:
-                return board.getNbPawnOnBoard(PlayerCategory.COMPUTER) < nbComputerPawnBeginTurn;
-            case COMPUTER:
-                return board.getNbPawnOnBoard(PlayerCategory.USER) < nbUserPawnBeginTurn;
+        //If no pawn was taken last turn, we change player turn.
+        if(evaluation == board.getNbPawnOnBoard(PlayerCategory.USER)-board.getNbPawnOnBoard(PlayerCategory.COMPUTER)) {
+            if (this.playerTurn.equals(PlayerCategory.USER)) {
+                this.playerTurn = PlayerCategory.COMPUTER;
+            } else if (this.playerTurn.equals(PlayerCategory.COMPUTER)) {
+                this.playerTurn = PlayerCategory.USER;
+            }
+            replay=false;
         }
-        return false;
+        //If pawns was taken but we can't capture any other pawn with the same pawn we used last turn, we change player turn.
+        else if(this.playerTurn.equals(PlayerCategory.COMPUTER)&&board.possibleCapture(computer.getLastPlayed()).isEmpty()) {
+            this.playerTurn = PlayerCategory.USER;
+            replay=false;
+        }
+        else if(this.playerTurn.equals(PlayerCategory.USER)&&board.possibleCapture(user.getLastPlayed(),getUser().getAlreadyVisited()).isEmpty()) {
+            this.playerTurn = PlayerCategory.COMPUTER;
+            replay = false;
+        }
+        else{
+            replay=true;
+        }
+        evaluation= board.getNbPawnOnBoard(PlayerCategory.USER)-board.getNbPawnOnBoard(PlayerCategory.COMPUTER);
+
     }
 
     private void startGame() throws InterruptedException, IOException {
         while (!isGameOver()) {
+            System.out.println("PlayerTunr :"+playerTurn);
+            System.out.println("Replay :"+replay);
 
             //enable the clicks on the nodes
             board.setDisableAllNodes(false);
 
             // user plays as much times as the rules allow
             if(playerTurn.equals(PlayerCategory.USER)) {
+                System.out.println("a");
                 this.nbUserPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.USER);
                 this.nbComputerPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.COMPUTER);
                 if (!board.canPlay(Node.getColorUser())){
@@ -131,6 +139,8 @@ public class Game extends Thread {
 
             // computer plays as much times as the rules allow
             if(playerTurn.equals(PlayerCategory.COMPUTER) && !isGameOver()) {
+                sleep(1000);
+                System.out.println("b");
                 this.nbUserPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.USER);
                 this.nbComputerPawnBeginTurn = board.getNbPawnOnBoard(PlayerCategory.COMPUTER);
                 if (!board.canPlay(Node.getColorCpu())){
@@ -201,15 +211,15 @@ public class Game extends Thread {
         ((User)user).setPawnDeselected(pawnDeselected);
     }
 
-    public int getNbLose() {
-        return nbLose;
-    }
-
-    public int getNbWin() {
-        return nbWin;
-    }
-
     public Player getComputer(){
         return computer;
+    }
+
+    public boolean isReplay() {
+        return replay;
+    }
+
+    public User getUser() {
+        return user;
     }
 }
