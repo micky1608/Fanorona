@@ -8,8 +8,8 @@ import java.lang.management.PlatformLoggingMXBean;
 public class Game extends Thread {
 
     private Board board;
-    private Computer computer;
-    private User user;
+    private Player computer;
+    private Player user;
 
     private PlayerCategory playerTurn;
 
@@ -53,8 +53,8 @@ public class Game extends Thread {
                 //First line to play against the IA
                 //Second line to test the IA against an IA playing randomly.
 
-                this.user = new User(this);
-                //this.user = new Computer(this, true);
+                //this.user = new User(this);
+                this.user = new Computer(this, true);
 
                 this.playerTurn = PlayerCategory.USER;
                 this.nbComputerPawnBeginTurn = 0;
@@ -71,8 +71,7 @@ public class Game extends Thread {
             }
             System.out.println("Win:"+nbWin);
             System.out.println("Lose:"+nbLose+"\n");
-
-            */
+*/
     }
 
     /**
@@ -219,7 +218,7 @@ public class Game extends Thread {
         return replay;
     }
 
-    public User getUser() {
+    public Player getUser() {
         return user;
     }
 }

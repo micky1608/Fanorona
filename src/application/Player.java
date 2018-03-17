@@ -1,5 +1,7 @@
 package application;
 
+import java.util.ArrayList;
+
 public abstract class Player {
 
     // the gale the player is playing
@@ -26,6 +28,12 @@ public abstract class Player {
     public abstract void selectNodeBeginning() throws InterruptedException;
 
     public abstract void selectNodeEnd() throws InterruptedException;
+
+    public abstract Node getLastPlayed();
+
+    public abstract ArrayList<Node> getAlreadyVisited();
+
+    public abstract void setLastPlayed(Node node);
 
     protected void endTurn() {
         game.switchPlayerTurn();

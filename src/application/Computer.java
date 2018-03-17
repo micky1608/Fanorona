@@ -50,7 +50,7 @@ public class Computer extends Player {
         //If it's the main IA, makes X simulations/treenode and chose the one with the most chances to win.
         if(!testing) {
             for(TreeNode tn:sons){
-                for(int i=0;i<10; i++){
+                for(int i=0;i<50; i++){
                     gameSimulator=new GameSimulator(game.getBoard().clone(), testing?PlayerCategory.USER:PlayerCategory.COMPUTER);
                     tn.setProbabilityToWin(gameSimulator.simulate());
                 }
@@ -124,5 +124,13 @@ public class Computer extends Player {
 
     public Node getLastPlayed() {
         return lastPlayed;
+    }
+
+    public ArrayList<Node> getAlreadyVisited() {
+        return alreadyVisited;
+    }
+
+    public void setLastPlayed(Node node){
+
     }
 }
