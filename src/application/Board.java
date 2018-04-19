@@ -420,7 +420,7 @@ public class Board implements Cloneable {
                     // check if the node is an empty node we can move to
                     if (potentialDestination.getFill().equals(Node.getColorEmpty())) {
 
-                        // check if the move to the potential destiantion allows the capture of an opponent pawn.
+                        // check if the move to the potential destination allows the capture of an opponent pawn.
 
                         if((potentialDestination.getX()+i)>=0 && (potentialDestination.getX()+i)<9 && (potentialDestination.getY()+j)>=0 && (potentialDestination.getY())+j<5){
                             Node testPercussionNode = this.nodes[potentialDestination.getX() + i][potentialDestination.getY() + j];

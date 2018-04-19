@@ -16,7 +16,7 @@ public class TreeNode {
     private TreeNode father;
 
     // the sons tree nodes of this
-    private ArrayList<TreeNode> sons=new ArrayList<>();
+    private ArrayList<TreeNode> sons = new ArrayList<>();
 
     // evaluation of a board configuration (nb user pawns - nb computer pawns)
     // computer wants to minimize this value
