@@ -48,9 +48,9 @@ public class Controller implements Initializable {
             gridPane.getRowConstraints().add(rowConstraints);
 
 
-        gridPane.setStyle("-fx-background-image : url('images/plateau.jpg')");
+        gridPane.setStyle("-fx-background-image : url('/images/plateau.jpg')");
 
-        anchorPane.setStyle("-fx-background-image : url('images/background_textarea.jpg')");
+        anchorPane.setStyle("-fx-background-image : url('/images/background_textarea.jpg')");
         console.setStyle("-fx-background-color: rgba(0, 0, 0, 0);");
 
         console.setEditable(false);
@@ -75,8 +75,7 @@ public class Controller implements Initializable {
      * @Param texte
      */
     public void setTexte (String texte){
-        javafx.application.Platform.runLater( () -> console.setText(console.getText()+"\n"+texte));
-        console.setScrollTop(Double.MAX_VALUE);
+        javafx.application.Platform.runLater( () -> console.appendText("\n"+texte));
     }
 
     /**

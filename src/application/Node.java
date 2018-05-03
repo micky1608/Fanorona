@@ -264,7 +264,7 @@ public class Node extends Circle {
                         }
                     }
                     else{
-                        board.getController().setTexte("Un autre pion peut faire une prise.");
+                        board.getController().setTexte("Another pawn can capture ! Please use it !");
                     }
 
                 } else {
